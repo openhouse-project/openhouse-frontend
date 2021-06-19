@@ -1,4 +1,18 @@
-<div class="bg-gray-100 rounded pa-4">
-	<h1>Welcome to SvelteKit (+ TailwindCSS)</h1>
-	<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-</div>
+<script>
+	import { browser } from '$app/env';
+
+</script>
+
+<svelte:head>
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"></script>
+	<script src="https://meet.jit.si/libs/lib-jitsi-meet.min.js"></script>
+</svelte:head>
+
+<h1>Jitsi Test</h1>
+{#if browser}
+	{#await import('$lib/Meeting.svelte') then Meeting}
+		<svelte:component this={Meeting.default} />
+	{/await}
+{:else}
+	Loading...
+{/if}

@@ -9,6 +9,8 @@ specifiers:
   eslint: ^7.22.0
   eslint-config-prettier: ^8.1.0
   eslint-plugin-svelte3: ^3.2.0
+  jitsi-svelte: ^0.4.0
+  lib-jitsi-meet: github:jitsi/lib-jitsi-meet
   postcss: ^8.2.13
   postcss-load-config: ^3.0.1
   prettier: ~2.2.1
@@ -29,6 +31,8 @@ devDependencies:
   eslint: 7.29.0
   eslint-config-prettier: 8.3.0_eslint@7.29.0
   eslint-plugin-svelte3: 3.2.0_eslint@7.29.0+svelte@3.38.2
+  jitsi-svelte: 0.4.0
+  lib-jitsi-meet: 1.0.6
   postcss: 8.3.5
   postcss-load-config: 3.1.0
   prettier: 2.2.1
@@ -1281,6 +1285,12 @@ packages:
     resolution: {integrity: sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=}
     dev: true
 
+  /jitsi-svelte/0.4.0:
+    resolution: {integrity: sha512-xoYVQfKFhDzKuppEmZLWGkKgHycK2d1UbUr+Z+pvcN43GkAk3fucLFNENPqQd1Eqvn5VntC5adopRA3bjrdp0Q==}
+    dependencies:
+      keycode-js: 3.1.0
+    dev: true
+
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
     dev: true
@@ -1317,12 +1327,20 @@ packages:
       graceful-fs: 4.2.6
     dev: true
 
+  /keycode-js/3.1.0:
+    resolution: {integrity: sha512-aAa8PVW7kBDyG14ifGOseaVBjsT1LI953060yRSzzf3G0beKKEuwHVvFGcCI+AofY68NUkPxbLqrkfWPjXySCw==}
+    dev: true
+
   /levn/0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
     dependencies:
       prelude-ls: 1.2.1
       type-check: 0.4.0
+    dev: true
+
+  /lib-jitsi-meet/1.0.6:
+    resolution: {integrity: sha1-q1BuBP6+35ssXj50b5MrgBh3bdU=}
     dev: true
 
   /lilconfig/2.0.3:
