@@ -20,7 +20,6 @@
 		"eslint-config-prettier": "^8.1.0",
 		"eslint-plugin-svelte3": "^3.2.0",
 		"jitsi-svelte": "^0.4.0",
-		"lib-jitsi-meet": "github:jitsi/lib-jitsi-meet",
 		"postcss": "^8.2.13",
 		"postcss-load-config": "^3.0.1",
 		"prettier": "~2.2.1",
@@ -32,5 +31,8 @@
 		"tslib": "^2.0.0",
 		"typescript": "^4.0.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"svelte-web3": "^2.0.1"
+	}
 }

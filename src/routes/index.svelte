@@ -10,8 +10,8 @@
 
 <h1>Jitsi Test</h1>
 {#if browser}
-	{#await import('$lib/Meeting.svelte') then Meeting}
-		<svelte:component this={Meeting.default} />
+	{#await import('$lib/Home.svelte') then Home}
+		<svelte:component this={Home.default} />
 	{/await}
 {:else}
 	Loading...
