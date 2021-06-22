@@ -1,13 +1,13 @@
 <script context="module" lang="ts">
 	export const ROOT_ADDRESS = '0x0000000000000000000000000000000000000000';
 	export const TIP_ADDRESS = '0x834356a88C66897FA0A05a61964a91A607956ee3';
-
 </script>
 
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { addressName } from '$lib/store.js';
 	import ENS from 'ethjs-ens';
 
 	const BALANCE_CHECK_INTERVAL = 5000;
@@ -49,13 +49,20 @@
 	export async function requestAccounts(): Promise<void> {
 		$accounts = await web3.eth.requestAccounts();
 		$address = $accounts[0];
+		addressName.set($address);
 		$domain = await ensDomain($address);
 	}
 
 	async function ensDomain(address) {
-		const resolved = await ens.reverse(address);
-		console.log(resolved);
-		return resolved;
+		try {
+			const resolved = await ens.reverse(address);
+			console.log(resolved);
+			addressName.set(resolved);
+			return resolved;
+		} catch(e) {
+			console.log(e);
+			return null;
+		}
 	}
 
 </script>
