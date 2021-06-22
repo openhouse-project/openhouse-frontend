@@ -7,7 +7,7 @@
 	import { onMount } from 'svelte';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { addressName } from '$lib/store.js';
+	import { addressName, ethAddress } from '$lib/store.js';
 	import ENS from 'ethjs-ens';
 
 	const BALANCE_CHECK_INTERVAL = 5000;
@@ -49,6 +49,7 @@
 	export async function requestAccounts(): Promise<void> {
 		$accounts = await web3.eth.requestAccounts();
 		$address = $accounts[0];
+		ethAddress.set($address);
 		addressName.set($address);
 		$domain = await ensDomain($address);
 	}
