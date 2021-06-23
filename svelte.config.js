@@ -1,5 +1,7 @@
 import preprocess from 'svelte-preprocess';
+import adapter from '@sveltejs/adapter-static';
 import fs from 'fs';
+
 const { dependencies } = JSON.parse(fs.readFileSync('./package.json').toString());
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -16,7 +18,12 @@ const config = {
 			ssr: {
 				external: [...Object.keys(dependencies), 'Buffer']
 			}
-		}
+		},
+		adapter: adapter({
+			pages: 'build',
+			assets: 'build',
+			fallback: null
+		})
 	}
 };
 

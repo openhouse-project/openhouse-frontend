@@ -5,7 +5,6 @@
 	import { browser } from '$app/env';
 
 	if (browser) window.Buffer = Buffer;
-
 </script>
 
 <MonoChain let:address let:domain let:requestAccounts>
@@ -28,15 +27,19 @@
 	</main>
 </MonoChain>
 
-<style>
-	:global(html, body) {
+<style global>
+	html,
+	body {
 		margin: 0;
 		padding: 0;
 		font-family: 'Roboto', sans-serif;
 		font-size: 18px;
 		line-height: 1.125em;
 	}
-	:global(input, select, textarea, button) {
+	input,
+	select,
+	textarea,
+	button {
 		font-family: 'Roboto', sans-serif;
 		font-size: 18px;
 		height: 36px;
@@ -45,11 +48,16 @@
 		padding: 6px 12px;
 		border: 2px solid var(--border-color, royalblue);
 	}
-	:global(h1, h2, h3, h4, h5, h6) {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
 		margin: 0;
 		padding: 0;
 	}
-	:global(body *) {
+	* {
 		box-sizing: border-box;
 	}
 	header {
@@ -78,17 +86,20 @@
 		justify-content: flex-end;
 	}
 
-	main > :global(h1) {
+	main > h1 {
 		margin: 12px 0 18px 0;
 	}
-	main > :global(h2, h3, h4, h5, h6) {
+	main > h2,
+	h3,
+	h4,
+	h5,
+	h6 {
 		margin: 6px 0;
 	}
 
-	main > :global(hr) {
+	main > hr {
 		margin: 12px 0;
 		border: none;
 		border-bottom: 2px solid whitesmoke;
 	}
-
 </style>
