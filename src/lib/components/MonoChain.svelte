@@ -19,9 +19,11 @@
 	export const address = writable(ROOT_ADDRESS);
 	export const accounts = writable([]);
 	export const balance = writable('');
+	export const ethBalance = writable('');
 	export const domain = writable(false);
 	setContext('address', address);
 	setContext('balance', balance);
+	setContext('ethBalance', ethBalance);
 
 	let balanceLoading = false;
 	let balanceCheckInterval;
@@ -41,6 +43,7 @@
 		if (web3 && $address !== ROOT_ADDRESS && !balanceLoading) {
 			balanceLoading = true;
 			$balance = await web3.eth.getBalance($address);
+			$ethBalance = web3.utils.fromWei($balance, 'ether');
 			balanceLoading = false;
 		}
 		return $balance;
@@ -89,4 +92,4 @@
 
 </script>
 
-<slot address={$address} balance={$balance} chain={web3} domain={$domain} {requestAccounts} />
+<slot address={$address} balance={$balance} ethBalance={$ethBalance} chain={web3} domain={$domain} {requestAccounts} />

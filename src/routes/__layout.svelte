@@ -7,7 +7,7 @@
 	if (browser) window.Buffer = Buffer;
 </script>
 
-<MonoChain let:address let:domain let:requestAccounts>
+<MonoChain let:address let:domain let:requestAccounts let:ethBalance>
 	<header>
 		<section>
 			<h1>OpenHouse</h1>
@@ -16,9 +16,9 @@
 			{#if address === ROOT_ADDRESS}
 				<Button on:click={requestAccounts}>Connect</Button>
 			{:else if domain}
-				<span>{domain}</span>
+				<span>{domain} ({ethBalance} ETH)</span>
 			{:else}
-				<span>{address}</span>
+				<span>{address} ({ethBalance} ETH)</span>
 			{/if}
 		</section>
 	</header>
