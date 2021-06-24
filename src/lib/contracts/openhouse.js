@@ -1,4 +1,4 @@
-export const OPENHOUSE_ADDRESS = '0x4D526AF9721ba80cd67324fBAb4f9438C97F6859';
+export const OPENHOUSE_ADDRESS = '0xFf3D0372a03118cB6343EAEE7A7918e73982e872';
 export const OPENHOUSE_CONTRACT =
 [
 	{
@@ -12,6 +12,38 @@ export const OPENHOUSE_CONTRACT =
 		"name": "addRoom",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nonce",
+				"type": "string"
+			}
+		],
+		"name": "storeNonce",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "toVerify",
+				"type": "address"
+			}
+		],
+		"name": "getNonceForAddress",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{

@@ -7,7 +7,7 @@
 	import { onMount } from 'svelte';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { addressName, ethAddress } from '$lib/store.js';
+	import { addressName, ethAddress, token } from '$lib/store.js';
 	import ENS from 'ethjs-ens';
 
 	const BALANCE_CHECK_INTERVAL = 5000;
@@ -52,6 +52,27 @@
 		ethAddress.set($address);
 		addressName.set($address);
 		$domain = await ensDomain($address);
+		
+		
+		const challenge = await getChallengeForAddress($address);
+		const signature = await web3.eth.personal.sign(challenge, $address, "wtfisthis");
+		const response = await fetch(`http://localhost:3100/login/` + $address, {
+			method: 'POST',
+			cache: 'no-cache',
+			redirect: 'error',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({signature: signature})
+		});
+		const responseJson = await response.json();
+		token.set(responseJson.token);
+	}
+
+	export async function getChallengeForAddress(address) {
+		const response = await fetch(`http://localhost:3100/login/` + $address);
+		const responseData = await response.json();
+		return responseData.challenge;
 	}
 
 	async function ensDomain(address) {

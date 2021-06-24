@@ -13,7 +13,7 @@
 	import { onMount } from 'svelte';
 	import { OPENHOUSE_ADDRESS } from '$lib/contracts/openhouse.js';
 	import { OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse.js';
-	import { ethAddress } from '$lib/store.js';
+	import { ethAddress, token } from '$lib/store.js';
 	import { RingLoader } from 'svelte-loading-spinners';
 
 	export let slug;
@@ -23,6 +23,7 @@
 
 	onMount(async () => {
 		const domain = 'localhost:8443';
+		
 		const options = {
 			roomName: slug,
 			width: 700,
@@ -30,7 +31,8 @@
 			userInfo: {
 				displayName: $addressName
 			},
-			parentNode: document.querySelector('#meet')
+			parentNode: document.querySelector('#meet'),
+			jwt: $token
 		}
 		
 		const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
