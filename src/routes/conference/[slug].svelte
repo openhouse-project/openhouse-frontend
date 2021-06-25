@@ -22,7 +22,7 @@
 	var transactionFailed = false;
 
 	onMount(async () => {
-		const domain = 'localhost:8443';
+		const domain = 'meet.joepetrich.com:8443';
 		
 		const options = {
 			roomName: slug,
