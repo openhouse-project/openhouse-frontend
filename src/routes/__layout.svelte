@@ -10,7 +10,7 @@
 <MonoChain let:address let:domain let:requestAccounts let:ethBalance>
 	<header>
 		<section>
-			<h1>OpenHouse</h1>
+			<a id="brand" href="/">OpenHouse</a>
 		</section>
 		<section class="connect">
 			{#if address === ROOT_ADDRESS}
@@ -67,9 +67,11 @@
 		justify-content: space-between;
 		background: whitesmoke;
 	}
-	header h1 {
+	header a#brand {
 		margin: 0;
 		font-size: 28px;
+		color: #111;
+		text-decoration: none;
 	}
 	header section {
 		display: flex;

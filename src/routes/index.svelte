@@ -88,8 +88,16 @@
 	}
 	.rooms {
 		display: flex;
+		padding: 12px 0;
 	}
 	.rooms a {
-		padding: 6px 12px;
+		padding: 6px 24px 6px 0;
+		text-decoration: none;
+		font-size: 24px;
+		color: royalblue;
+	}
+	.rooms a:hover,
+	.rooms a:visited {
+		color: rebeccapurple;
 	}
 </style>
