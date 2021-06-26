@@ -4,14 +4,26 @@
 	import { ROOT_ADDRESS } from '$lib/components/MonoChain.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
+	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
+	import { writable } from 'svelte/store';
 
+	const chain = getContext('chain');
 	const address = getContext('address');
+	const rooms = writable([]);
+
 	export let conferenceId = '';
 	const onFormSubmit = () => {
-		console.log('Joining', conferenceId);
 		goto(`/conference/${conferenceId}`);
 	};
 
+	let contract;
+	$: if (chain && $chain) {
+		contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
+		const listRooms = contract.methods.listRooms();
+		listRooms.call().then((result) => {
+			$rooms = result;
+		});
+	}
 </script>
 
 {#if $address !== ROOT_ADDRESS}
@@ -24,49 +36,14 @@
 	</section>
 {/if}
 <section>
-	<h1>Welcome to OpenHouse</h1>
-
-	<hr />
-
-	<h3>Summary</h3>
-	<p>
-		Openhouse is a project to prototype a decentralised “Clubhouse”, using Jitsi and Ethereum, as
-		part of Hackmoney hackathon.
-	</p>
-	<p>
-		HackMoney is a 3-week remote hackathon from June 18th to July 9th 2021, organised by ETHGlobal.
-	</p>
-
-	<hr />
-
-	<h3>Approach</h3>
-	<p>
-		We are comitted to starting by integrating jitsi-meet with Ethereum, to allow users to login
-		with their Ethereum wallets as their identity.
-	</p>
-	<p>
-		After this, we intend to integrate the user-access-control module in jitsi-meet, with a
-		custom-built decentralised database running on Ethereum blockchain.
-	</p>
-	<p>
-		A proposed next step would be to create an onchain governance mechanism to allow community to
-		control access. Also, to integrate with ENS for human-readable name-labelling.
-	</p>
-
-	<hr />
-
-	<h4>Project update</h4>
-	<p>The project was conceived, and the initial team formed on 18 June 2021.</p>
-	<p>
-		The skillsets of the initial team range from UX Design, Solutions Architecture, Business
-		Operations and Software Development. Software experience include Jitsi, Ethereum, Livepeer,
-		golang, Java, C++, Python, Spring, React, Node, as well as Solidity for smart contracting.
-	</p>
-
-	<hr />
-
-	<h4>Resources</h4>
-	Discord server github
+	<h2>Available Conferences</h2>
+	{#if $rooms && $rooms.length}
+		{#each $rooms as room}
+			<span>{room}</span>
+		{/each}
+	{:else}
+		<p>There are no conferences registered yet. Use the form above to be the first to register.</p>
+	{/if}
 </section>
 
 <style>
@@ -107,5 +84,4 @@
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
 	}
-
 </style>

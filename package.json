@@ -2,8 +2,8 @@
 	"name": "~TODO~",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "svelte-kit dev",
-		"build": "svelte-kit build",
+		"dev": "dotenv svelte-kit dev",
+		"build": "dotenv svelte-kit build",
 		"preview": "svelte-kit preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
@@ -17,6 +17,7 @@
 		"@typescript-eslint/parser": "^4.28.0",
 		"autoprefixer": "^10.2.6",
 		"cssnano": "^5.0.6",
+		"dotenv-cli": "^4.0.0",
 		"eslint": "^7.29.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-svelte3": "^3.2.0",
@@ -35,8 +36,12 @@
 	"type": "module",
 	"dependencies": {
 		"buffer": "^6.0.3",
+		"cookie": "^0.4.1",
+		"dotenv": "^10.0.0",
 		"eth-ens-namehash": "^2.0.8",
 		"ethjs-provider-http": "^0.1.6",
+		"ioredis": "^4.27.6",
+		"jsonwebtoken": "^8.5.1",
 		"svelte-web3": "^2.0.2"
 	}
 }

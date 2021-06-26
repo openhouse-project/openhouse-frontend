@@ -1,81 +1,81 @@
-export const OPENHOUSE_ADDRESS = '0xFf3D0372a03118cB6343EAEE7A7918e73982e872';
-export const OPENHOUSE_CONTRACT =
-[
+// export const OPENHOUSE_ADDRESS = '0xFf3D0372a03118cB6343EAEE7A7918e73982e872';
+export const OPENHOUSE_ADDRESS = '0x01FADe383e9355Fee0481C19d4A6Af260A06e85E'; // Ropsten Testnet
+export const OPENHOUSE_CONTRACT = [
 	{
-		"inputs": [
+		inputs: [
 			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
+				internalType: 'string',
+				name: 'name',
+				type: 'string'
 			}
 		],
-		"name": "addRoom",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		name: 'addRoom',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function'
 	},
 	{
-		"inputs": [
+		inputs: [
 			{
-				"internalType": "string",
-				"name": "nonce",
-				"type": "string"
+				internalType: 'string',
+				name: 'nonce',
+				type: 'string'
 			}
 		],
-		"name": "storeNonce",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		name: 'storeNonce',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function'
 	},
 	{
-		"inputs": [
+		inputs: [
 			{
-				"internalType": "address",
-				"name": "toVerify",
-				"type": "address"
+				internalType: 'address',
+				name: 'toVerify',
+				type: 'address'
 			}
 		],
-		"name": "getNonceForAddress",
-		"outputs": [
+		name: 'getNonceForAddress',
+		outputs: [
 			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
+				internalType: 'string',
+				name: '',
+				type: 'string'
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
+		stateMutability: 'view',
+		type: 'function'
 	},
 	{
-		"inputs": [],
-		"name": "listRooms",
-		"outputs": [
+		inputs: [],
+		name: 'listRooms',
+		outputs: [
 			{
-				"internalType": "string[]",
-				"name": "",
-				"type": "string[]"
+				internalType: 'string[]',
+				name: '',
+				type: 'string[]'
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
+		stateMutability: 'view',
+		type: 'function'
 	},
 	{
-		"inputs": [
+		inputs: [
 			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
+				internalType: 'string',
+				name: 'name',
+				type: 'string'
 			}
 		],
-		"name": "members",
-		"outputs": [
+		name: 'members',
+		outputs: [
 			{
-				"internalType": "address[]",
-				"name": "",
-				"type": "address[]"
+				internalType: 'address[]',
+				name: '',
+				type: 'address[]'
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
+		stateMutability: 'view',
+		type: 'function'
 	}
 ];
