@@ -1,22 +1,13 @@
-<script context="module" lang="ts">
-	import type { LoadInput, LoadOutput } from '@sveltejs/kit';
-	import { addressName } from '$lib/store';
-
-	export async function load({ page }: LoadInput): Promise<LoadOutput> {
-		const { slug } = page.params;
-		return { props: { slug } };
-	}
-</script>
-
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { getContext, onMount } from 'svelte';
-	import { OPENHOUSE_ADDRESS } from '$lib/contracts/openhouse.js';
-	import { OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse.js';
-	import { ethAddress, token } from '$lib/store';
+	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
+	import { addressName, ethAddress, token } from '$lib/store';
 	import { RingLoader } from 'svelte-loading-spinners';
 	import type { Writable } from 'svelte/store';
+	import type Web3 from 'web3';
 
-	const chain: Writable<any> = getContext('chain');
+	const chain: Writable<Web3> = getContext('chain');
 
 	export let slug = undefined;
 	let iframeApi = false;
@@ -24,16 +15,16 @@
 	let transactionFailed = false;
 
 	onMount(async () => {
-		const domain = import.meta.env.VITE_JITSI_DOMAIN || 'video.collaboratory.io';
+		const domain = import.meta?.env?.VITE_JITSI_DOMAIN || 'video.collaboratory.io';
 
 		const options = {
-			roomName: slug,
+			roomName: $page.params.slug,
 			width: '100%',
 			height: 700,
 			userInfo: {
 				displayName: $addressName
 			},
-			parentNode: document.querySelector('#meet'),
+			parentNode: (window as any).document.querySelector('#meet'),
 			jwt: $token
 		};
 
@@ -41,7 +32,7 @@
 			const contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
 			console.log('from address: ' + $ethAddress);
 			contract.methods
-				.addRoom(slug)
+				.addRoom($page.params.slug)
 				.send({ from: $ethAddress })
 				.on('transactionHash', function (hash) {
 					console.log('transactionHash: ' + hash);
