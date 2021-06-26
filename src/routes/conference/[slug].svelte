@@ -9,7 +9,6 @@
 
 	const chain: Writable<Web3> = getContext('chain');
 
-	export let slug = undefined;
 	let iframeApi = false;
 	let connected = false;
 	let transactionFailed = false;
@@ -62,10 +61,10 @@
 <section>
 	{#if !transactionFailed}
 		{#if connected}
-			<h1>Connected to {slug}</h1>
+			<h1>Connected to {$page.params.slug}</h1>
 		{/if}
 		{#if !connected}
-			<h1>Connecting to {slug}</h1>
+			<h1>Connecting to {$page.params.slug}</h1>
 			<RingLoader size="120" color="#FF3E00" unit="px" duration="1s" />
 		{/if}
 	{/if}
