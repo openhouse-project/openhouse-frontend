@@ -27,7 +27,7 @@
 			jwt: $token
 		};
 
-		if (chain && $chain) {
+		if (chain && $chain && $token) {
 			const contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
 			console.log('from address: ' + $ethAddress);
 			contract.methods
