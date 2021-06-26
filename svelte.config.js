@@ -1,5 +1,5 @@
 import preprocess from 'svelte-preprocess';
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-node';
 import fs from 'fs';
 
 const { dependencies } = JSON.parse(fs.readFileSync('./package.json').toString());
@@ -19,11 +19,7 @@ const config = {
 				external: [...Object.keys(dependencies), 'Buffer']
 			}
 		},
-		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: null
-		})
+		adapter: adapter()
 	}
 };
 
