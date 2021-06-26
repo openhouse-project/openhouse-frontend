@@ -9,17 +9,15 @@
 
 	const chain: Writable<Web3> = getContext('chain');
 
-	export let slug = undefined;
 	let iframeApi = false;
 	let connected = false;
 	let transactionFailed = false;
 
-	onMount(async () => {
-		const domain = import.meta?.env?.VITE_JITSI_DOMAIN || 'video.collaboratory.io';
+	const domain = import.meta?.env?.VITE_JITSI_DOMAIN || 'video.collaboratory.io';
 
+	$: if (chain && $chain && $token && $addressName && !iframeApi) {
 		const options = {
 			roomName: $page.params.slug,
-			width: '100%',
 			height: 700,
 			userInfo: {
 				displayName: $addressName
@@ -27,45 +25,40 @@
 			parentNode: (window as any).document.querySelector('#meet'),
 			jwt: $token
 		};
-
-		if (chain && $chain) {
-			const contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
-			console.log('from address: ' + $ethAddress);
-			contract.methods
-				.addRoom($page.params.slug)
-				.send({ from: $ethAddress })
-				.on('transactionHash', function (hash) {
-					console.log('transactionHash: ' + hash);
-				})
-				.on('confirmation', function (confirmationNumber, receipt) {
-					if (!connected) {
-						iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
-						connected = true;
-					}
-					console.log('confirmationNumber: ' + confirmationNumber);
-				})
-				.on('receipt', function (receipt) {
-					// receipt example
-					console.log(receipt);
-				})
-				.on('error', function (error, receipt) {
-					// If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
-					console.error(error);
-					transactionFailed = true;
-				});
-		} else {
-			console.error('Chain not available');
-		}
-	});
+		const contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
+		console.log('from address: ' + $ethAddress);
+		contract.methods
+			.addRoom($page.params.slug)
+			.send({ from: $ethAddress })
+			.on('transactionHash', function (hash) {
+				console.log('transactionHash: ' + hash);
+			})
+			.on('confirmation', function (confirmationNumber, receipt) {
+				if (!connected && !iframeApi) {
+					iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
+					connected = true;
+				}
+				console.log('confirmationNumber: ' + confirmationNumber);
+			})
+			.on('receipt', function (receipt) {
+				// receipt example
+				console.log(receipt);
+			})
+			.on('error', function (error, receipt) {
+				// If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+				console.error(error);
+				transactionFailed = true;
+			});
+	}
 </script>
 
 <section>
 	{#if !transactionFailed}
 		{#if connected}
-			<h1>Connected to {slug}</h1>
+			<h1>Connected to {$page.params.slug}</h1>
 		{/if}
 		{#if !connected}
-			<h1>Connecting to {slug}</h1>
+			<h1>Connecting to {$page.params.slug}</h1>
 			<RingLoader size="120" color="#FF3E00" unit="px" duration="1s" />
 		{/if}
 	{/if}

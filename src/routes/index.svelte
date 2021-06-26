@@ -38,9 +38,11 @@
 <section>
 	<h2>Available Conferences</h2>
 	{#if $rooms && $rooms.length}
-		{#each $rooms as room}
-			<span>{room}</span>
-		{/each}
+		<div class="rooms">
+			{#each $rooms as room}
+				<a href="/conference/{room}">{room}</a>
+			{/each}
+		</div>
 	{:else}
 		<p>There are no conferences registered yet. Use the form above to be the first to register.</p>
 	{/if}
@@ -83,5 +85,19 @@
 	.join__hero :global(button) {
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
+	}
+	.rooms {
+		display: flex;
+		padding: 12px 0;
+	}
+	.rooms a {
+		padding: 6px 24px 6px 0;
+		text-decoration: none;
+		font-size: 24px;
+		color: royalblue;
+	}
+	.rooms a:hover,
+	.rooms a:visited {
+		color: rebeccapurple;
 	}
 </style>
