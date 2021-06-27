@@ -31,6 +31,7 @@
 		border: var(--border, none);
 		font-size: var(--font-size, 24px);
 		cursor: pointer;
+		transition: background 1s;
 	}
 	.button--fullwidth {
 		width: 100%;

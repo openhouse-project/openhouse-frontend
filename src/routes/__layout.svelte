@@ -15,9 +15,6 @@
 			<section>
 				<a id="brand" href="/">OpenHouse</a>
 			</section>
-			<section class="tip">
-				<SendTip size="small" />
-			</section>
 			<section class="connect">
 				{#if address === ROOT_ADDRESS}
 					<Button on:click={requestAccounts}>Connect</Button>
@@ -31,6 +28,10 @@
 				{/if}
 			</section>
 		</header>
+		<section class="tip">
+			<span>Early Access Beta</span>
+			<SendTip size="small" />
+		</section>
 		<main>
 			<slot />
 		</main>
@@ -46,7 +47,7 @@
 		font-size: 18px;
 		line-height: 1.125em;
 		color: hsl(--color-blue-95);
-		background: var(--color-blue-5);
+		background: var(--color-blue-30);
 	}
 	input:not([type='checkbox']),
 	select,
@@ -83,26 +84,20 @@
 	}
 	header {
 		line-height: 42px;
-		padding: 18px 24px 0 24px;
+		padding: 6px 24px;
 		display: flex;
 		justify-content: space-between;
-		background: linear-gradient(to top, var(--color-blue-10), var(--color-blue-5));
+		background: linear-gradient(to top, var(--color-blue-50), var(--color-blue-40));
 		color: var(--color-aqua-70);
 	}
 	header a#brand {
 		margin: 0;
 		font-size: 28px;
-		color: var(--color-green);
+		color: var(--color-aqua-70);
 		text-decoration: none;
 	}
 	header section {
 		display: flex;
-	}
-
-	header section.join {
-		align-items: center;
-		justify-content: center;
-		text-align: center;
 	}
 
 	header section.connect {
@@ -144,7 +139,13 @@
 	}
 
 	section.tip {
-		justify-content: center;
+		display: flex;
+		padding: 12px;
+		align-items: center;
+		justify-content: space-between;
+		background: var(--color-blue-20);
+		color: var(--color-aqua-70);
+		padding: 12px 24px;
 	}
 
 	@media (max-width: 420px) {

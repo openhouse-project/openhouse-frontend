@@ -56,8 +56,8 @@
 {:else}
 	<Button
 		{size}
-		--bg="linear-gradient(to bottom, var(--color-orange), var(--color-red))"
-		--hover-bg="linear-gradient(to bottom, var(--color-orange-40), var(--color-red-40))"
+		--bg="linear-gradient(to bottom, var(--color-orange-60), var(--color-red-60))"
+		--hover-bg="linear-gradient(to bottom, var(--color-orange), var(--color-red))"
 		on:click={onSendTip}
 		disabled={sending}
 	>

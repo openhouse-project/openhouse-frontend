@@ -20,7 +20,7 @@
 		--color-blue-90: hsl(var(--color-blue-base), 90%);
 		--color-blue-95: hsl(var(--color-blue-base), 95%);
 
-		--color-orange-hue: 25;
+		--color-orange-hue: 40;
 		--color-orange-saturation: 85%;
 		--color-orange-base: var(--color-orange-hue), var(--color-orange-saturation);
 		--color-orange: hsl(var(--color-orange-base), 50%);
@@ -52,8 +52,8 @@
 		--color-green-90: hsl(var(--color-green-base), 90%);
 		--color-green-95: hsl(var(--color-green-base), 95%);
 
-		--color-red-hue: 355;
-		--color-red-saturation: 55%;
+		--color-red-hue: 345;
+		--color-red-saturation: 65%;
 		--color-red-base: var(--color-red-hue), var(--color-red-saturation);
 		--color-red: hsl(var(--color-red-base), 50%);
 		--color-red-5: hsl(var(--color-red-base), 5%);

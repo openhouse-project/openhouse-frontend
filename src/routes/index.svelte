@@ -38,6 +38,7 @@
 </script>
 
 <section class="join__hero">
+	<img class="ethlogo" alt="Ethereum Logo" src="/eth.svg" height="400px" />
 	{#if $address !== ROOT_ADDRESS}
 		<div in:slide out:slide class="join__form">
 			<h1>
@@ -104,19 +105,21 @@
 		border-radius: 8px;
 		padding: 6px 24px;
 		user-select: none;
+		background: hsla(var(--color-blue-base), 15%, 70%);
+	}
+	.join__action:hover {
+		border-color: var(--color-aqua-60);
 	}
 	.join__action.create {
 		color: var(--color-green);
 	}
 	.join__hero {
-		background: linear-gradient(
-			to bottom right,
-			var(--color-blue-10),
-			var(--color-blue-10),
-			var(--color-blue-5)
-		);
+		position: relative;
 		padding: 12px 24px;
 		font-size: 24px;
+		background-color: #4158d0;
+		background-image: linear-gradient(43deg, #4158d0 0%, #c850c0 46%, #ffcc70 100%);
+
 		color: white;
 		display: flex;
 		flex-direction: column;
@@ -129,9 +132,11 @@
 		margin: 42px auto 12px auto;
 		text-align: center;
 		line-height: 1.25;
+		z-index: 1;
 	}
 
 	.join__hero form {
+		z-index: 1;
 		display: inline-flex;
 	}
 
@@ -145,7 +150,13 @@
 	.join__hero input {
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
+		background: hsla(var(--color-blue-base), 15%, 70%);
 		width: 100%;
+	}
+	.join__hero img.ethlogo {
+		position: absolute;
+		z-index: 0;
+		pointer-events: none;
 	}
 	.join__form,
 	.join__connect {
