@@ -26,29 +26,39 @@
 			jwt: $token
 		};
 		const contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
-		console.log('from address: ' + $ethAddress);
-		contract.methods
-			.addRoom($page.params.slug)
-			.send({ from: $ethAddress })
-			.on('transactionHash', function (hash) {
-				console.log('transactionHash: ' + hash);
-			})
-			.on('confirmation', function (confirmationNumber, receipt) {
-				if (!connected && !iframeApi) {
+		const isInRoom = contract.methods.senderIsInRoom($page.params.slug);
+		isInRoom.call({ from: $ethAddress }).then((isMember) => {
+			if (isMember) {
+				if (!connected) {
 					iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
 					connected = true;
 				}
-				console.log('confirmationNumber: ' + confirmationNumber);
-			})
-			.on('receipt', function (receipt) {
-				// receipt example
-				console.log(receipt);
-			})
-			.on('error', function (error, receipt) {
-				// If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
-				console.error(error);
-				transactionFailed = true;
-			});
+			} else {
+				contract.methods
+					.addRoom($page.params.slug)
+					.send({ from: $ethAddress })
+					.on('transactionHash', function (transactionHash) {
+						console.info({ transactionHash });
+					})
+					.on('confirmation', function (confirmationNumber, receipt) {
+						if (!connected && !iframeApi) {
+							iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
+							connected = true;
+						}
+						console.info({ confirmationNumber, receipt });
+					})
+					.on('receipt', function (receipt) {
+						// receipt example
+						console.info({ receipt });
+					})
+					.on('error', function (error, receipt) {
+						// If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+						console.error(error);
+						console.info({ receipt });
+						transactionFailed = true;
+					});
+			}
+		});
 	}
 </script>
 
