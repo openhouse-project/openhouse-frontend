@@ -46,8 +46,8 @@
 		font-family: 'Roboto', sans-serif;
 		font-size: 18px;
 		line-height: 1.125em;
-		color: hsl(--color-blue-95);
-		background: var(--color-blue-30);
+		background: var(--color-blue-20);
+		color: var(--color-blue-95);
 	}
 	input:not([type='checkbox']),
 	select,
