@@ -33,7 +33,7 @@
 		font-size: 32px;
 		padding: 24px 48px;
 	}
-	button.attach--left {
+	button.button.attach--left {
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
 	}

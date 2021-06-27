@@ -11,10 +11,11 @@
 	const chain: Writable<Web3> = getContext('chain');
 
 	let contract;
-	let iframeApi = false;
+	let iframeApi: any = false;
 	let connected = false;
 	let transactionFailed = false;
 	let loading = false;
+	let dominantSpeaker = false;
 
 	let roomExists = false;
 	let isMember = false;
@@ -61,6 +62,9 @@
 				jwt: $token
 			};
 			iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
+			iframeApi.addEventListener('dominantSpeakerChanged', (event) => {
+				dominantSpeaker = event.id;
+			});
 			connected = true;
 		}
 	}
@@ -139,6 +143,11 @@
 		<h1>Transaction failed. Please try again.</h1>
 	{/if}
 	<div id="meet" />
+	{#if connected}
+		<div class="toolbar">
+			Dominant speaker: {dominantSpeaker}
+		</div>
+	{/if}
 </section>
 
 <style>
@@ -151,5 +160,9 @@
 	.heading {
 		display: flex;
 		justify-content: space-between;
+	}
+	.toolbar {
+		background: hsl(235, 25%, 25%);
+		padding: 12px 24px;
 	}
 </style>

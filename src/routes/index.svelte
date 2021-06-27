@@ -12,6 +12,7 @@
 	const address = getContext('address');
 	const rooms = writable([]);
 	const myRooms = writable([]);
+	const requestAccounts = getContext('requestAccounts');
 
 	export let conferenceId = '';
 	const onFormSubmit = () => {
@@ -43,42 +44,46 @@
 			</form>
 		</div>
 	{:else}
-		<div in:slide out:slide>
-			<h1>Connect a Wallet</h1>
+		<div in:slide out:slide class="join__connect">
+			<h1>Connect a wallet to continue</h1>
+			<Button on:click={requestAccounts}>Connect Wallet</Button>
 		</div>
 	{/if}
 </section>
-<section class="rooms__container">
-	<h2>My Conferences</h2>
-	<div class="rooms">
-		{#if $myRooms && $myRooms.length}
-			{#each $myRooms as room}
-				<a href="/conference/{room}">{room}</a>
-			{/each}
-		{:else}
-			<p>
-				You're not registered for any conferences yet. Join or create one using the form above or
-				the list below.
-			</p>
-		{/if}
-	</div>
-	<h2>All Conferences</h2>
 
-	<div class="rooms">
-		{#if $rooms && $rooms.length}
-			{#each $rooms as room}
-				<a href="/conference/{room}">{room}</a>
-			{/each}
-		{:else}
-			<p>
-				There are no conferences registered yet. Use the form above to be the first to register.
-			</p>
-		{/if}
-	</div>
-</section>
-<section class="tip">
-	<SendTip />
-</section>
+{#if $address !== ROOT_ADDRESS}
+	<section class="rooms__container">
+		<h2>My Conferences</h2>
+		<div class="rooms">
+			{#if $myRooms && $myRooms.length}
+				{#each $myRooms as room}
+					<a href="/conference/{room}">{room}</a>
+				{/each}
+			{:else}
+				<p>
+					You're not registered for any conferences yet. Join or create one using the form above or
+					the list below.
+				</p>
+			{/if}
+		</div>
+		<h2>All Conferences</h2>
+
+		<div class="rooms">
+			{#if $rooms && $rooms.length}
+				{#each $rooms as room}
+					<a href="/conference/{room}">{room}</a>
+				{/each}
+			{:else}
+				<p>
+					There are no conferences registered yet. Use the form above to be the first to register.
+				</p>
+			{/if}
+		</div>
+	</section>
+	<section class="tip">
+		<SendTip />
+	</section>
+{/if}
 
 <style>
 	section {
@@ -118,11 +123,8 @@
 		border-bottom-right-radius: 0;
 		width: 100%;
 	}
-	.join__hero :global(button) {
-		border-top-left-radius: 0;
-		border-bottom-left-radius: 0;
-	}
-	.join__form {
+	.join__form,
+	.join__connect {
 		display: flex;
 		flex-direction: column;
 		align-items: center;

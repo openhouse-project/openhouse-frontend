@@ -25,6 +25,7 @@
 	setContext('address', address);
 	setContext('balance', balance);
 	setContext('ethBalance', ethBalance);
+	setContext('requestAccounts', requestAccounts);
 
 	let balanceLoading = false;
 	let balanceCheckInterval;
@@ -51,7 +52,7 @@
 	});
 
 	export async function getBalance(): Promise<string> {
-		if (web3 && $address !== ROOT_ADDRESS && !balanceLoading) {
+		if (web3 && $web3 && $address !== ROOT_ADDRESS && !balanceLoading) {
 			balanceLoading = true;
 			$balance = await $web3.eth.getBalance($address);
 			$ethBalance = $web3.utils.fromWei($balance, 'ether');
