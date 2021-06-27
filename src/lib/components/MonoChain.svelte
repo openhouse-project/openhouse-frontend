@@ -30,7 +30,17 @@
 	let balanceCheckInterval;
 	onMount(async () => {
 		const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
-		$web3 = new Web3(Web3.givenProvider || 'https://sokol.poa.network');
+		let provider;
+		if (!Web3.givenProvider) {
+			const WalletConnect = await import('@walletconnect/web3-provider/dist/umd/index.min.js').then(
+				(mod) => mod.default.default
+			);
+			provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
+			await provider.enable();
+		} else {
+			provider = Web3.givenProvider;
+		}
+		$web3 = new Web3(provider);
 		$ens = new ENS({ provider: $web3.currentProvider, network: '1' });
 		await requestAccounts();
 		await getBalance();
