@@ -36,7 +36,7 @@
 		font-size: 18px;
 		line-height: 1.125em;
 	}
-	input,
+	input:not([type='checkbox']),
 	select,
 	textarea,
 	button {
