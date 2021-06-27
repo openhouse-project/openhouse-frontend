@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, tick } from 'svelte';
 	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
 	import { addressName, ethAddress, token } from '$lib/store';
 	import { RingLoader } from 'svelte-loading-spinners';
 	import type { Writable } from 'svelte/store';
 	import type Web3 from 'web3';
 	import Button from '$lib/components/Button.svelte';
+	import SendTip from '$lib/components/SendTip.svelte';
 
 	const chain: Writable<Web3> = getContext('chain');
 
@@ -15,7 +16,7 @@
 	let connected = false;
 	let transactionFailed = false;
 	let loading = false;
-	let dominantSpeaker = false;
+	let dominantSpeaker: false | string = false;
 
 	let roomExists = false;
 	let isMember = false;
@@ -51,21 +52,25 @@
 	}
 
 	function initializeJitsi() {
-		if (!connected) {
-			const options = {
-				roomName: $page.params.slug,
-				height: 700,
-				userInfo: {
-					displayName: $addressName
-				},
-				parentNode: (window as any).document.querySelector('#meet'),
-				jwt: $token
-			};
-			iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
-			iframeApi.addEventListener('dominantSpeakerChanged', (event) => {
-				dominantSpeaker = event.id;
+		if (!connected && $addressName) {
+			tick().then(() => {
+				const options = {
+					roomName: $page.params.slug,
+					height: 700,
+					userInfo: {
+						displayName: $ethAddress
+					},
+					parentNode: (window as any).document.querySelector('#meet'),
+					jwt: $token
+				};
+				iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
+				iframeApi.addEventListener('dominantSpeakerChanged', (event) => {
+					const participants = iframeApi.getParticipantsInfo();
+					const participant = participants.find((p) => p.participantId === event.id);
+					dominantSpeaker = participant?.displayName;
+				});
+				connected = true;
 			});
-			connected = true;
 		}
 	}
 
@@ -145,7 +150,17 @@
 	<div id="meet" />
 	{#if connected}
 		<div class="toolbar">
-			Dominant speaker: {dominantSpeaker}
+			{#if dominantSpeaker}
+				<div class="tipspeaker">
+					<SendTip to={dominantSpeaker} resetOnSuccess>
+						Tip Speaker
+						<svelte:fragment slot="success">Your tip was sent successfully!</svelte:fragment>
+					</SendTip>
+					<div class="tipspeaker__id">
+						({dominantSpeaker})
+					</div>
+				</div>
+			{/if}
 		</div>
 	{/if}
 </section>
@@ -164,5 +179,15 @@
 	.toolbar {
 		background: hsl(235, 25%, 25%);
 		padding: 12px 24px;
+	}
+	.tipspeaker {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+	}
+	.tipspeaker__id {
+		font-size: 12px;
+		padding-top: 12px;
 	}
 </style>

@@ -38,27 +38,39 @@
 	}
 </script>
 
-<slot {success} {error} {sending}>
-	{#if success}
-		<slot name="success">
-			<p>Thank you for your generosity!</p>
-		</slot>
-	{:else}
-		<slot name="error" {error}>
-			{#if error}
-				<p>An error was encountered when sending your transaction.</p>
-			{/if}
-		</slot>
-		{#if sending}
-			<RingLoader />
-		{:else}
-			<Button
-				size="large"
-				--bg="orange"
-				--hover-bg="darkorange"
-				on:click={onSendTip}
-				disabled={sending}>Send us a Tip</Button
-			>
-		{/if}
+{#if success}
+	<p class="success"><slot name="success">Thank you for your generosity!</slot></p>
+{/if}
+<slot name="error" {error}>
+	{#if error}
+		<p class="error">
+			<b>Oops!</b> An error was encountered when sending your transaction. Double check the address of
+			the recipient and try again.
+		</p>
 	{/if}
 </slot>
+{#if sending}
+	<RingLoader />
+	<p>Sending tip...</p>
+{:else}
+	<Button
+		size="large"
+		--bg="orange"
+		--hover-bg="darkorange"
+		on:click={onSendTip}
+		disabled={sending}
+	>
+		<slot {success} {error} {sending}>Send us a Tip</slot>
+	</Button>
+{/if}
+
+<style>
+	.success {
+		color: hsl(140, 55%, 65%);
+		padding: 12px 0;
+	}
+	.error {
+		color: hsl(4, 95%, 65%);
+		padding: 12px 0;
+	}
+</style>

@@ -64,9 +64,9 @@
 	export async function requestAccounts(): Promise<void> {
 		$accounts = await $web3.eth.requestAccounts();
 		$address = $accounts[0];
-		ethAddress.set($address);
-		addressName.set($address);
+		$ethAddress = $address;
 		$domain = await ensDomain($address);
+		$addressName = $domain || $address;
 
 		const tkn = await getToken();
 		if (!tkn) {
@@ -105,15 +105,10 @@
 	}
 
 	async function ensDomain(address) {
-		try {
-			const resolved = await $ens.reverse(address);
-			addressName.set(resolved);
-			return resolved;
-		} catch (e) {
-			console.log(e);
-			return null;
-		}
+		return $ens.reverse(address);
 	}
+
+	$: $addressName = $domain || $address;
 </script>
 
 <slot
