@@ -86,24 +86,24 @@
 	}
 	.join__hero {
 		background: linear-gradient(to bottom, hsl(235, 25%, 15%), hsl(235, 25%, 5%));
-		padding: 24px 48px;
-		font-size: 48px;
+		padding: 12px 24px;
+		font-size: 24px;
 		color: white;
 		display: flex;
-		height: 400px;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		width: 100vw;
 	}
 
 	.join__hero h1 {
 		margin: 42px auto 12px auto;
 		text-align: center;
+		line-height: 1.25;
 	}
 
 	.join__hero form {
 		display: inline-flex;
-		margin: 48px auto 24px auto;
 	}
 
 	.join__hero input,
@@ -116,6 +116,7 @@
 	.join__hero input {
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
+		width: 100%;
 	}
 	.join__hero :global(button) {
 		border-top-left-radius: 0;
@@ -126,6 +127,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		width: 100%;
 	}
 	section.rooms__container,
 	section.tip {
@@ -155,5 +157,22 @@
 	}
 	.rooms a:hover {
 		background: hsl(235, 35%, 25%);
+	}
+
+	@media (max-width: 420px) {
+		.rooms {
+			flex-direction: column;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.join__hero {
+			padding: 24px 48px;
+			font-size: 48px;
+			min-height: 400px;
+		}
+		.join__hero form {
+			margin: 48px auto 24px auto;
+		}
 	}
 </style>

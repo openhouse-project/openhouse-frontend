@@ -15,10 +15,13 @@
 		<section class="connect">
 			{#if address === ROOT_ADDRESS}
 				<Button on:click={requestAccounts}>Connect</Button>
-			{:else if domain}
-				<span>{domain} ({ethBalance} ETH)</span>
 			{:else}
-				<span>{address} ({ethBalance} ETH)</span>
+				{#if domain}
+					<span class="domain">{domain}</span>
+				{:else}
+					<span class="address">{domain}</span>
+				{/if}
+				<span class="currency">ETH</span><span class="balance">{ethBalance}</span>
 			{/if}
 		</section>
 	</header>
@@ -77,7 +80,6 @@
 	}
 	header section {
 		display: flex;
-		width: 33%;
 	}
 
 	header section.join {
@@ -105,5 +107,29 @@
 		margin: 12px 0;
 		border: none;
 		border-bottom: 2px solid whitesmoke;
+	}
+
+	span.domain,
+	span.currency {
+		font-weight: bold;
+		margin-right: 12px;
+	}
+	span.balance {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 64px;
+		white-space: nowrap;
+	}
+
+	@media (max-width: 420px) {
+		header {
+			flex-direction: column;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		header section {
+			width: 33%;
+		}
 	}
 </style>
