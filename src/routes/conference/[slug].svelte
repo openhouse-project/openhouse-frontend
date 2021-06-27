@@ -128,6 +128,7 @@
 			</p>
 		{:else}
 			<p>Public room view, i.e. list of room members</p>
+			<Button on:click={sendTransaction}>Join this Conference</Button>
 		{/if}
 	{:else if !transactionFailed}
 		{#if !connected}
