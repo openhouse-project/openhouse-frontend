@@ -146,6 +146,7 @@
 		font-size: 42px;
 		height: 64px;
 		padding: 12px 24px;
+		z-index: 1;
 	}
 	.join__hero input {
 		border-top-right-radius: 0;
