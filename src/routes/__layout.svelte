@@ -35,6 +35,8 @@
 		font-family: 'Roboto', sans-serif;
 		font-size: 18px;
 		line-height: 1.125em;
+		background: hsl(235, 25%, 5%);
+		color: hsl(235, 95%, 95%);
 	}
 	input:not([type='checkbox']),
 	select,
@@ -62,15 +64,15 @@
 	}
 	header {
 		line-height: 42px;
-		padding: 6px 12px;
+		padding: 6px 24px;
 		display: flex;
 		justify-content: space-between;
-		background: whitesmoke;
+		background: linear-gradient(to top, hsl(235, 25%, 15%), hsl(235, 25%, 5%));
 	}
 	header a#brand {
 		margin: 0;
 		font-size: 28px;
-		color: #111;
+		color: hsl(235, 95%, 95%);
 		text-decoration: none;
 	}
 	header section {
