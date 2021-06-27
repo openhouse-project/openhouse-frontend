@@ -118,21 +118,24 @@
 		{#if loading}
 			<RingLoader size="120" color="#FF3E00" unit="px" duration="1s" />
 		{:else if !roomExists}
-			This conference does not exist yet! <Button on:click={sendTransaction}
-				>Create this Conference Now</Button
-			>
-			<label for="public"
-				>Anyone can view member list & topic <input
-					type="checkbox"
-					name="public"
-					id="public"
-					bind:checked={createPublic}
-				/></label
-			>
+			<div class="room__create">
+				<p>This conference does not exist yet!</p>
+				<Button fullWidth size="large" on:click={sendTransaction}>Create this Conference</Button>
+				<p>
+					<label for="public"
+						>Anyone can view member list & topic <input
+							type="checkbox"
+							name="public"
+							id="public"
+							bind:checked={createPublic}
+						/></label
+					>
+				</p>
+			</div>
 		{:else if !isPublic}
 			<p>
 				This conference room is private. <Button on:click={sendTransaction}
-					>Join this Conference Now</Button
+					>Join this Conference</Button
 				>
 			</p>
 		{:else}
@@ -177,7 +180,7 @@
 		justify-content: space-between;
 	}
 	.toolbar {
-		background: hsl(235, 25%, 25%);
+		background: var(--color-aqua-10);
 		padding: 12px 24px;
 	}
 	.tipspeaker {
@@ -189,5 +192,11 @@
 	.tipspeaker__id {
 		font-size: 12px;
 		padding-top: 12px;
+	}
+
+	.room__create {
+		text-align: center;
+		margin: auto;
+		max-width: 420px;
 	}
 </style>

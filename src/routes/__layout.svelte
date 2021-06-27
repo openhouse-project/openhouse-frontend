@@ -3,32 +3,39 @@
 	import Button from '$lib/components/Button.svelte';
 	import { Buffer } from 'buffer';
 	import { browser } from '$app/env';
+	import Theme from '$lib/components/Theme.svelte';
+	import SendTip from '$lib/components/SendTip.svelte';
 
 	if (browser) window.Buffer = Buffer;
 </script>
 
-<MonoChain let:address let:domain let:requestAccounts let:ethBalance>
-	<header>
-		<section>
-			<a id="brand" href="/">OpenHouse</a>
-		</section>
-		<section class="connect">
-			{#if address === ROOT_ADDRESS}
-				<Button on:click={requestAccounts}>Connect</Button>
-			{:else}
-				{#if domain}
-					<span class="domain">{domain}</span>
+<Theme>
+	<MonoChain let:address let:domain let:requestAccounts let:ethBalance>
+		<header>
+			<section>
+				<a id="brand" href="/">OpenHouse</a>
+			</section>
+			<section class="tip">
+				<SendTip size="small" />
+			</section>
+			<section class="connect">
+				{#if address === ROOT_ADDRESS}
+					<Button on:click={requestAccounts}>Connect</Button>
 				{:else}
-					<span class="address">{domain}</span>
+					{#if domain}
+						<span class="domain">{domain}</span>
+					{:else}
+						<span class="address">{address}</span>
+					{/if}
+					<span class="currency">ETH</span><span class="balance">{ethBalance}</span>
 				{/if}
-				<span class="currency">ETH</span><span class="balance">{ethBalance}</span>
-			{/if}
-		</section>
-	</header>
-	<main>
-		<slot />
-	</main>
-</MonoChain>
+			</section>
+		</header>
+		<main>
+			<slot />
+		</main>
+	</MonoChain>
+</Theme>
 
 <style global>
 	html,
@@ -38,8 +45,8 @@
 		font-family: 'Roboto', sans-serif;
 		font-size: 18px;
 		line-height: 1.125em;
-		background: hsl(235, 25%, 5%);
-		color: hsl(235, 95%, 95%);
+		color: hsl(--color-blue-95);
+		background: var(--color-blue-5);
 	}
 	input:not([type='checkbox']),
 	select,
@@ -51,7 +58,16 @@
 		line-height: 24px;
 		appearance: none;
 		padding: 6px 12px;
-		border: 2px solid var(--border-color, royalblue);
+		background: var(--color-blue-20);
+		color: white;
+		outline: none;
+		border: 3px solid transparent;
+	}
+
+	input:focus-within,
+	select:focus-within,
+	textarea:focus-within {
+		border: 3px solid var(--border-color, var(--color-aqua-60));
 	}
 	h1,
 	h2,
@@ -67,15 +83,16 @@
 	}
 	header {
 		line-height: 42px;
-		padding: 6px 24px;
+		padding: 18px 24px 0 24px;
 		display: flex;
 		justify-content: space-between;
-		background: linear-gradient(to top, hsl(235, 25%, 15%), hsl(235, 25%, 5%));
+		background: linear-gradient(to top, var(--color-blue-10), var(--color-blue-5));
+		color: var(--color-aqua-70);
 	}
 	header a#brand {
 		margin: 0;
 		font-size: 28px;
-		color: hsl(235, 95%, 95%);
+		color: var(--color-green);
 		text-decoration: none;
 	}
 	header section {
@@ -110,15 +127,24 @@
 	}
 
 	span.domain,
-	span.currency {
+	span.address {
 		font-weight: bold;
-		margin-right: 12px;
+		margin-right: 24px;
 	}
-	span.balance {
+	span.currency {
+		margin-right: 8px;
+	}
+	span.balance,
+	span.domain,
+	span.address {
 		overflow: hidden;
 		text-overflow: ellipsis;
-		max-width: 64px;
+		max-width: 128px;
 		white-space: nowrap;
+	}
+
+	section.tip {
+		justify-content: center;
 	}
 
 	@media (max-width: 420px) {

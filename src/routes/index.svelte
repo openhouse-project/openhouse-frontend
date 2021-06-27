@@ -7,12 +7,15 @@
 	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
 	import { writable } from 'svelte/store';
 	import SendTip from '$lib/components/SendTip.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 
 	const chain = getContext('chain');
 	const address = getContext('address');
 	const rooms = writable([]);
 	const myRooms = writable([]);
 	const requestAccounts = getContext('requestAccounts');
+
+	let action = 'Join';
 
 	export let conferenceId = '';
 	const onFormSubmit = () => {
@@ -37,7 +40,15 @@
 <section class="join__hero">
 	{#if $address !== ROOT_ADDRESS}
 		<div in:slide out:slide class="join__form">
-			<h1>Join or Create a Conference</h1>
+			<h1>
+				I want to <span
+					on:click={() => {
+						action = action === 'Join' ? 'Create' : 'Join';
+					}}
+					class="join__action {action.toLowerCase()}"
+					>{action} <Icon --size="42px">expand_more</Icon></span
+				> a Conference
+			</h1>
 			<form on:submit|preventDefault={onFormSubmit}>
 				<input type="text" name="conferenceId" id="conferenceId" bind:value={conferenceId} />
 				<Button attach="left" type="submit">Join</Button>
@@ -80,17 +91,30 @@
 			{/if}
 		</div>
 	</section>
-	<section class="tip">
-		<SendTip />
-	</section>
 {/if}
 
 <style>
 	section {
 		padding: 24px;
 	}
+	.join__action {
+		cursor: pointer;
+		color: var(--color-aqua);
+		border: 2px solid var(--color-blue-20);
+		border-radius: 8px;
+		padding: 6px 24px;
+		user-select: none;
+	}
+	.join__action.create {
+		color: var(--color-green);
+	}
 	.join__hero {
-		background: linear-gradient(to bottom, hsl(235, 25%, 15%), hsl(235, 25%, 5%));
+		background: linear-gradient(
+			to bottom right,
+			var(--color-blue-10),
+			var(--color-blue-10),
+			var(--color-blue-5)
+		);
 		padding: 12px 24px;
 		font-size: 24px;
 		color: white;
@@ -133,8 +157,8 @@
 	}
 	section.rooms__container,
 	section.tip {
-		max-width: 1000px;
-		margin: auto;
+		background: var(--color-blue-10);
+		color: white;
 	}
 	section.tip {
 		display: flex;
@@ -151,14 +175,14 @@
 		align-items: center;
 		padding: 12px 24px;
 		margin: 6px 12px;
-		background: hsl(235, 35%, 15%);
+		background: var(--color-blue-20);
 		text-decoration: none;
 		font-size: 24px;
-		color: goldenrod;
+		color: var(--color-green);
 		line-height: 1.5;
 	}
 	.rooms a:hover {
-		background: hsl(235, 35%, 25%);
+		background: var(--color-blue-30);
 	}
 
 	@media (max-width: 420px) {

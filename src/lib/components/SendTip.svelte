@@ -11,6 +11,7 @@
 	export let sending = false;
 	export let success = false;
 	export let error = false;
+	export let size = 'large';
 
 	async function onSendTip() {
 		if (sending) return false;
@@ -54,13 +55,13 @@
 	<p>Sending tip...</p>
 {:else}
 	<Button
-		size="large"
-		--bg="orange"
-		--hover-bg="darkorange"
+		{size}
+		--bg="linear-gradient(to bottom, var(--color-orange), var(--color-red))"
+		--hover-bg="linear-gradient(to bottom, var(--color-orange-40), var(--color-red-40))"
 		on:click={onSendTip}
 		disabled={sending}
 	>
-		<slot {success} {error} {sending}>Send us a Tip</slot>
+		<slot {success} {error} {sending}>Tip the Openhouse Project</slot>
 	</Button>
 {/if}
 

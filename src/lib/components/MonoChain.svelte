@@ -19,7 +19,7 @@
 	export const address = writable(ROOT_ADDRESS);
 	export const accounts = writable([]);
 	export const balance = writable('');
-	export const ethBalance = writable('');
+	export const ethBalance = writable('0');
 	export const domain = writable(false);
 
 	setContext('address', address);
