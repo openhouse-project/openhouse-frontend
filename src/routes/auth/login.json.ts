@@ -34,18 +34,18 @@ export async function post({ body }): Promise<any> {
 	}
 
 	// See https://github.com/jitsi/lib-jitsi-meet/blob/master/doc/tokens.md
-	const payload = { 								
+	const payload = {
 		context: {
 			user: {
 				name: address
 			}
 		},
-		aud: "jitsy",										// From Jitsi JWT example
-		iss: env.JWT_ISSUER_ID,								// Needs to match the Jitsi config
-		sub: "video.collaboratory.io",						// Not sure this is validated by Jitsi
-		room: "*",											// All rooms allowed
-		exp: Math.floor(Date.now() / 1000) + (60 * 60),		// Expiration in 1 hour
-		nbf: Math.floor(Date.now() / 1000) - 30				// Not good before 30 seconds ago
+		aud: env.JWT_ISSUER_ID, // From Jitsi JWT example
+		iss: env.JWT_ISSUER_ID, // Needs to match the Jitsi config
+		sub: 'video.collaboratory.io', // Not sure this is validated by Jitsi
+		room: '*', // All rooms allowed
+		exp: Math.floor(Date.now() / 1000) + 60 * 60, // Expiration in 1 hour
+		nbf: Math.floor(Date.now() / 1000) - 30 // Not good before 30 seconds ago
 	};
 	const token = jwt.sign(payload, env.JWT_APP_SECRET);
 	return {
