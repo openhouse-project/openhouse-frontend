@@ -23,7 +23,7 @@
 	let isPublic = true;
 	let createPublic = false;
 
-	const domain = import.meta?.env?.VITE_JITSI_DOMAIN || 'video.collaboratory.io';
+	const domain = import.meta.env.VITE_JITSI_DOMAIN ?? 'video.collaboratory.io';
 
 	function sendTransaction() {
 		loading = true;
