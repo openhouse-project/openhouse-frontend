@@ -1,5 +1,5 @@
 //export const OPENHOUSE_ADDRESS = '0xFf3D0372a03118cB6343EAEE7A7918e73982e872';	 // Rinkeby Testnet
-export const OPENHOUSE_ADDRESS = '0x01FADe383e9355Fee0481C19d4A6Af260A06e85E'; // Ropsten Testnet
+export const OPENHOUSE_ADDRESS = '0xd19f41Da8f24b0Cec339DceD41dE2FcABe22647a'; // Ropsten Testnet
 export const OPENHOUSE_CONTRACT: any[] = [
 	{
 		inputs: [
@@ -7,6 +7,11 @@ export const OPENHOUSE_CONTRACT: any[] = [
 				internalType: 'string',
 				name: 'name',
 				type: 'string'
+			},
+			{
+				internalType: 'bool',
+				name: 'isPublic',
+				type: 'bool'
 			}
 		],
 		name: 'addRoom',
@@ -15,32 +20,13 @@ export const OPENHOUSE_CONTRACT: any[] = [
 		type: 'function'
 	},
 	{
-		inputs: [
-			{
-				internalType: 'string',
-				name: 'nonce',
-				type: 'string'
-			}
-		],
-		name: 'storeNonce',
-		outputs: [],
-		stateMutability: 'nonpayable',
-		type: 'function'
-	},
-	{
-		inputs: [
-			{
-				internalType: 'address',
-				name: 'toVerify',
-				type: 'address'
-			}
-		],
-		name: 'getNonceForAddress',
+		inputs: [],
+		name: 'listRooms',
 		outputs: [
 			{
-				internalType: 'string',
+				internalType: 'string[]',
 				name: '',
-				type: 'string'
+				type: 'string[]'
 			}
 		],
 		stateMutability: 'view',
@@ -48,7 +34,7 @@ export const OPENHOUSE_CONTRACT: any[] = [
 	},
 	{
 		inputs: [],
-		name: 'listRooms',
+		name: 'listSenderRooms',
 		outputs: [
 			{
 				internalType: 'string[]',
@@ -73,6 +59,63 @@ export const OPENHOUSE_CONTRACT: any[] = [
 				internalType: 'address[]',
 				name: '',
 				type: 'address[]'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'string',
+				name: 'name',
+				type: 'string'
+			}
+		],
+		name: 'roomExists',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'string',
+				name: 'name',
+				type: 'string'
+			}
+		],
+		name: 'roomIsPublic',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
+			}
+		],
+		stateMutability: 'view',
+		type: 'function'
+	},
+	{
+		inputs: [
+			{
+				internalType: 'string',
+				name: 'name',
+				type: 'string'
+			}
+		],
+		name: 'senderIsInRoom',
+		outputs: [
+			{
+				internalType: 'bool',
+				name: '',
+				type: 'bool'
 			}
 		],
 		stateMutability: 'view',

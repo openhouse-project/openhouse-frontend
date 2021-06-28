@@ -19,18 +19,29 @@
 	export const address = writable(ROOT_ADDRESS);
 	export const accounts = writable([]);
 	export const balance = writable('');
-	export const ethBalance = writable('');
+	export const ethBalance = writable('0');
 	export const domain = writable(false);
 
 	setContext('address', address);
 	setContext('balance', balance);
 	setContext('ethBalance', ethBalance);
+	setContext('requestAccounts', requestAccounts);
 
 	let balanceLoading = false;
 	let balanceCheckInterval;
 	onMount(async () => {
 		const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
-		$web3 = new Web3(Web3.givenProvider || 'https://sokol.poa.network');
+		let provider;
+		if (!Web3.givenProvider) {
+			const WalletConnect = await import('@walletconnect/web3-provider/dist/umd/index.min.js').then(
+				(mod) => mod.default.default
+			);
+			provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
+			await provider.enable();
+		} else {
+			provider = Web3.givenProvider;
+		}
+		$web3 = new Web3(provider);
 		$ens = new ENS({ provider: $web3.currentProvider, network: '1' });
 		await requestAccounts();
 		await getBalance();
@@ -41,7 +52,7 @@
 	});
 
 	export async function getBalance(): Promise<string> {
-		if (web3 && $address !== ROOT_ADDRESS && !balanceLoading) {
+		if (web3 && $web3 && $address !== ROOT_ADDRESS && !balanceLoading) {
 			balanceLoading = true;
 			$balance = await $web3.eth.getBalance($address);
 			$ethBalance = $web3.utils.fromWei($balance, 'ether');
@@ -53,9 +64,9 @@
 	export async function requestAccounts(): Promise<void> {
 		$accounts = await $web3.eth.requestAccounts();
 		$address = $accounts[0];
-		ethAddress.set($address);
-		addressName.set($address);
+		$ethAddress = $address;
 		$domain = await ensDomain($address);
+		$addressName = $domain || $address;
 
 		const tkn = await getToken();
 		if (!tkn) {
@@ -94,15 +105,10 @@
 	}
 
 	async function ensDomain(address) {
-		try {
-			const resolved = await $ens.reverse(address);
-			addressName.set(resolved);
-			return resolved;
-		} catch (e) {
-			console.log(e);
-			return null;
-		}
+		return $ens.reverse(address);
 	}
+
+	$: $addressName = $domain || $address;
 </script>
 
 <slot

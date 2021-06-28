@@ -8,7 +8,7 @@
 		font-weight: normal;
 		font-style: normal;
 		font-size: var(--size, 24px);
-		color: var(--color, #222222);
+		color: var(--color, inherit);
 		display: inline-block;
 		line-height: 1;
 		text-transform: none;
