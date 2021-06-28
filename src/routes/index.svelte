@@ -15,7 +15,7 @@
 	const requestAccounts = getContext('requestAccounts');
 
 	let heroRef;
-	let ethPos = [0, 0];
+	let ethPos = [100, 100];
 	function onMouseMove(e) {
 		const rect = heroRef && heroRef.getBoundingClientRect();
 		ethPos[0] = (e.clientX / window.innerWidth) * rect.width;
@@ -122,13 +122,14 @@
 				<p class="helper">Submitting your transaction...</p>
 			{:else if !showForm}
 				<h1>
-					I want to <span
+					<span>I want to</span>
+					<span
 						on:click={() => {
 							action = action === 'Join' ? 'Create' : 'Join';
 						}}
 						class="join__action {action.toLowerCase()}"
 						>{action} <Icon --size="42px">expand_more</Icon></span
-					> a Room
+					> <span>a Room</span>
 				</h1>
 				<div class="join__next">
 					<Button
@@ -228,10 +229,14 @@
 		padding: 24px;
 	}
 	.join__action {
+		white-space: nowrap;
+		display: inline-flex;
+		align-items: center;
+		justify-content: space-between;
 		cursor: pointer;
 		color: var(--color-aqua);
 		border: 2px solid transparent;
-		padding: 0px 18px;
+		padding: 0 6px 0 12px;
 		user-select: none;
 		background: hsla(var(--color-blue-base), 32%, 42%);
 		text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.21);
@@ -257,11 +262,11 @@
 		justify-content: flex-start;
 		width: 100vw;
 		text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.18);
+		overflow: hidden;
 	}
 
 	.join__hero h1 {
 		margin: 24px auto;
-		text-align: right;
 		width: 100%;
 		line-height: 1.25;
 		z-index: 1;
@@ -289,6 +294,7 @@
 		flex-direction: column;
 		line-height: 1.25;
 		justify-content: flex-end;
+		box-sizing: border-box;
 	}
 
 	.join__hero input:not([type='checkbox']) {
@@ -385,8 +391,25 @@
 		}
 	}
 
-	@media (max-width: 420px) {
+	@media (max-width: 768px) {
 		.rooms {
+			flex-direction: column;
+		}
+		.join__hero h1 {
+			text-align: center;
+		}
+		.join__hero form {
+			width: 100%;
+		}
+		.join__hero form input[type='text'] {
+			width: 100%;
+		}
+		.join__hero span:not(.join__action) {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.join__hero form div {
 			flex-direction: column;
 		}
 	}

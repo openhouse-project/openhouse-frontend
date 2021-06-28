@@ -29,7 +29,7 @@
 			</section>
 		</header>
 		<section class="tip">
-			<span>Early Access Beta</span>
+			<span>v0.0.1</span>
 			<SendTip size="small" />
 		</section>
 		<main>
