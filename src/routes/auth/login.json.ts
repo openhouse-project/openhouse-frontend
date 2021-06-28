@@ -51,7 +51,7 @@ export async function post({ body }): Promise<any> {
 	return {
 		status: 200,
 		headers: {
-			'Set-Cookie': cookie.serialize('accessToken', token, { maxAge: 60 * 60 * 24 * 7, path: '/' })
+			'Set-Cookie': cookie.serialize('accessToken', token, { maxAge: 60 * 60, path: '/' })
 		},
 		body: {
 			token
