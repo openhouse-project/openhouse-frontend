@@ -20,7 +20,7 @@
 	export const accounts = writable([]);
 	export const balance = writable('');
 	export const ethBalance = writable('0');
-	export const domain = writable(false);
+	export const domain = writable('');
 
 	setContext('address', address);
 	setContext('balance', balance);
@@ -65,8 +65,14 @@
 		$accounts = await $web3.eth.requestAccounts();
 		$address = $accounts[0];
 		$ethAddress = $address;
-		$domain = await ensDomain($address);
-		$addressName = $domain || $address;
+		try {
+			$domain = await ensDomain($address);
+		} catch (e) {
+			console.info(e);	// for some reason ENS throws an error if the ENS name isn't found :(
+			$domain = null;
+		}
+		console.log('domain: ' + $domain);
+		$addressName = $domain ?? $address;
 
 		const tkn = await getToken();
 		if (!tkn) {
@@ -104,11 +110,11 @@
 		return challenge;
 	}
 
-	async function ensDomain(address) {
+	async function ensDomain(address): Promise<string> {
 		return $ens.reverse(address);
 	}
 
-	$: $addressName = $domain || $address;
+	$: $addressName = $domain ?? $address;
 </script>
 
 <slot
