@@ -33,7 +33,6 @@
 	let transactionSubmitted = false;
 	$: {
 		formValid = (action === 'Join' && roomNameExists) || (action === 'Create' && !roomNameExists);
-		console.log('form valid', formValid, action, roomNameExists);
 	}
 
 	const onFormSubmit = async () => {
