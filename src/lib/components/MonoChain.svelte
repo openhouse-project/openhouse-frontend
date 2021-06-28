@@ -6,30 +6,29 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { setContext } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { addressName, ethAddress, token } from '$lib/store';
+	import {
+		accounts,
+		addressName,
+		address,
+		balance,
+		domain,
+		network,
+		web3,
+		ens,
+		token
+	} from '$lib/store';
 	import ENS from 'ethjs-ens';
 
-	const BALANCE_CHECK_INTERVAL = 5000;
-
-	export let ens = writable(undefined);
-	export let web3 = writable(undefined);
+	const ACCOUNT_SYNC_INTERVAL = 5000;
 	setContext('chain', web3);
-
-	export const address = writable(ROOT_ADDRESS);
-	export const accounts = writable([]);
-	export const balance = writable('');
-	export const ethBalance = writable('0');
-	export const domain = writable(false);
-
 	setContext('address', address);
 	setContext('balance', balance);
-	setContext('ethBalance', ethBalance);
 	setContext('requestAccounts', requestAccounts);
 
 	let balanceLoading = false;
 	let balanceCheckInterval;
 	onMount(async () => {
+		const win = window as any;
 		const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
 		let provider;
 		if (!Web3.givenProvider) {
@@ -42,20 +41,43 @@
 			provider = Web3.givenProvider;
 		}
 		$web3 = new Web3(provider);
-		$ens = new ENS({ provider: $web3.currentProvider, network: '1' });
+		$network = await $web3.eth.net.getId();
+		$ens = new ENS({ provider: $web3.currentProvider, network: $network });
 		await requestAccounts();
 		await getBalance();
-		balanceCheckInterval = setInterval(getBalance, BALANCE_CHECK_INTERVAL);
+		await getToken();
+		if (win.ethereum) {
+			win.ethereum.on('accountsChanged', onAccountUpdate);
+			win.ethereum.on('chainChanged', () => {
+				window.location.reload();
+			});
+		}
+		balanceCheckInterval = setInterval(syncAccount, ACCOUNT_SYNC_INTERVAL);
 		return () => {
 			clearInterval(balanceCheckInterval);
 		};
 	});
 
+	export async function onAccountUpdate(acc): Promise<void> {
+		$accounts = acc;
+		await syncAccount();
+	}
+
+	export async function syncAccount(): Promise<void> {
+		if ($accounts[0] !== $address) {
+			console.log('Syncing account', $accounts[0]);
+			$address = $accounts[0];
+			$domain = await ensDomain($address).catch(() => '');
+			$addressName = $domain || $address;
+		}
+		await getBalance();
+	}
+
 	export async function getBalance(): Promise<string> {
 		if (web3 && $web3 && $address !== ROOT_ADDRESS && !balanceLoading) {
 			balanceLoading = true;
-			$balance = await $web3.eth.getBalance($address);
-			$ethBalance = $web3.utils.fromWei($balance, 'ether');
+			$balance.wei = await $web3.eth.getBalance($address);
+			$balance.eth = $web3.utils.fromWei($balance.wei, 'ether');
 			balanceLoading = false;
 		}
 		return $balance;
@@ -63,12 +85,11 @@
 
 	export async function requestAccounts(): Promise<void> {
 		$accounts = await $web3.eth.requestAccounts();
-		$address = $accounts[0];
-		$ethAddress = $address;
-		$domain = await ensDomain($address);
-		$addressName = $domain || $address;
+		await syncAccount();
+	}
 
-		const tkn = await getToken();
+	export async function getToken(): Promise<void> {
+		const tkn = await fetchToken();
 		if (!tkn) {
 			const challenge = await getChallengeForAddress($address);
 			const signature = await $web3.eth.personal.sign(challenge, $address, '');
@@ -89,7 +110,7 @@
 		}
 	}
 
-	export async function getToken(): Promise<string | false> {
+	export async function fetchToken(): Promise<string | false> {
 		const response = await fetch(`/auth.json`, {
 			headers: { Accept: 'application/json', Cache: 'no-cache' },
 			credentials: 'same-origin'
@@ -113,9 +134,9 @@
 
 <slot
 	address={$address}
+	addressName={$addressName}
 	balance={$balance}
-	ethBalance={$ethBalance}
-	chain={web3}
+	chain={$web3}
 	domain={$domain}
 	{requestAccounts}
 />

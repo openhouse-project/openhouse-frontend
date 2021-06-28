@@ -10,7 +10,7 @@
 </script>
 
 <Theme>
-	<MonoChain let:address let:domain let:requestAccounts let:ethBalance>
+	<MonoChain let:address let:domain let:requestAccounts let:balance>
 		<header>
 			<section>
 				<a id="brand" href="/">OpenHouse</a>
@@ -24,7 +24,7 @@
 					{:else}
 						<span class="address">{address}</span>
 					{/if}
-					<span class="currency">ETH</span><span class="balance">{ethBalance}</span>
+					<span class="currency">ETH</span><span class="balance">{balance.eth}</span>
 				{/if}
 			</section>
 		</header>

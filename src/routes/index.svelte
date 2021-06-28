@@ -6,7 +6,6 @@
 	import { goto } from '$app/navigation';
 	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
 	import { writable } from 'svelte/store';
-	import SendTip from '$lib/components/SendTip.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 
 	const chain = getContext('chain');
@@ -15,11 +14,79 @@
 	const myRooms = writable([]);
 	const requestAccounts = getContext('requestAccounts');
 
-	let action = 'Join';
+	let heroRef;
+	let ethPos = [0, 0];
+	function onMouseMove(e) {
+		const rect = heroRef && heroRef.getBoundingClientRect();
+		ethPos[0] = (e.clientX / window.innerWidth) * rect.width;
+		ethPos[1] = (e.clientY / window.innerHeight) * rect.height;
+	}
 
-	export let conferenceId = '';
-	const onFormSubmit = () => {
-		goto(`/conference/${conferenceId}`);
+	let action = 'Join';
+	let showForm = false;
+	let roomName = '';
+	let roomNameExists = false;
+	let formValid = false;
+	let loading = false;
+	let createPublic = false;
+	let transactionFailed = false;
+	let transactionSubmitted = false;
+	$: {
+		formValid = (action === 'Join' && roomNameExists) || (action === 'Create' && !roomNameExists);
+		console.log('form valid', formValid, action, roomNameExists);
+	}
+
+	const onFormSubmit = async () => {
+		let isMember = false;
+		if (action === 'Join' && roomNameExists) {
+			await contract.methods
+				.senderIsInRoom(roomName)
+				.call({ from: $address })
+				.then((isMem) => {
+					isMember = true;
+				});
+		}
+		if (action === 'Create' || !isMember) {
+			loading = true;
+			contract.methods
+				.addRoom(roomName, createPublic)
+				.send({ from: $address })
+				.on('transactionHash', function (transactionHash) {
+					transactionSubmitted = true;
+					console.info({ transactionHash });
+				})
+				.on('confirmation', function (confirmationNumber, receipt) {
+					console.info({ confirmationNumber, receipt });
+					loading = false;
+					goto(`/conference/${roomName}`);
+				})
+				.on('receipt', function (receipt) {
+					// receipt example
+					console.info({ receipt });
+				})
+				.on('error', function (error, receipt) {
+					// If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+					console.error(error);
+					console.info({ receipt });
+					transactionFailed = true;
+					loading = false;
+				});
+		} else {
+			goto(`/conference/${roomName}`);
+		}
+	};
+
+	let roomNameDebounce;
+	let roomExists;
+	const onNameInput = () => {
+		formValid = false;
+		roomNameExists = false;
+		if (!roomName || !roomName.length || !contract) return;
+		clearTimeout(roomNameDebounce);
+		roomNameDebounce = setTimeout(async () => {
+			roomExists = contract.methods.roomExists(roomName);
+			roomNameExists = await roomExists.call();
+		}, 250);
 	};
 
 	let contract;
@@ -37,23 +104,86 @@
 	}
 </script>
 
-<section class="join__hero">
-	<img class="ethlogo" alt="Ethereum Logo" src="/eth.svg" height="400px" />
+<svelte:window on:mousemove={onMouseMove} />
+<section class="join__hero" bind:this={heroRef}>
+	<img
+		class="ethlogo"
+		alt="Ethereum Logo"
+		src="/eth.svg"
+		height="400px"
+		style="left:{ethPos[0]}px;top:{ethPos[1]}px;"
+	/>
 	{#if $address !== ROOT_ADDRESS}
 		<div in:slide out:slide class="join__form">
-			<h1>
-				I want to <span
-					on:click={() => {
-						action = action === 'Join' ? 'Create' : 'Join';
-					}}
-					class="join__action {action.toLowerCase()}"
-					>{action} <Icon --size="42px">expand_more</Icon></span
-				> a Conference
-			</h1>
-			<form on:submit|preventDefault={onFormSubmit}>
-				<input type="text" name="conferenceId" id="conferenceId" bind:value={conferenceId} />
-				<Button attach="left" type="submit">Join</Button>
-			</form>
+			{#if transactionFailed}
+				<h1>Error</h1>
+				<p class="helper">An error was encountered while submitting your transaction.</p>
+			{:else if transactionSubmitted}
+				<h1>Transacting</h1>
+				<p class="helper">Submitting your transaction...</p>
+			{:else if !showForm}
+				<h1>
+					I want to <span
+						on:click={() => {
+							action = action === 'Join' ? 'Create' : 'Join';
+						}}
+						class="join__action {action.toLowerCase()}"
+						>{action} <Icon --size="42px">expand_more</Icon></span
+					> a Room
+				</h1>
+				<div class="join__next">
+					<Button
+						size="large"
+						on:click={() => {
+							showForm = true;
+							onNameInput();
+						}}>Get Started</Button
+					>
+				</div>
+			{:else}
+				<form transition:slide on:submit|preventDefault={onFormSubmit}>
+					<label for="roomName">
+						{#if action === 'Join'}
+							What's the name of the room you'd like to join?
+						{:else}
+							What do you want to name your room?
+						{/if}
+					</label>
+
+					<div>
+						<input
+							on:input={onNameInput}
+							type="text"
+							name="roomName"
+							id="roomName"
+							bind:value={roomName}
+						/>
+						<Button attach="left" type="submit" disabled={loading || !formValid}>
+							{#if loading}Loading...{:else}{action} Room{/if}
+						</Button>
+					</div>
+					{#if action === 'Create'}
+						<div transition:slide class="helper">
+							<label for="public">Anyone can view member list & topic</label>
+							<input type="checkbox" name="public" id="public" bind:checked={createPublic} />
+						</div>
+					{/if}
+					{#if !formValid}
+						<span transition:slide class="helper">
+							{#if roomName === ''}You must supply a valid room name.
+							{:else if action === 'Join'}This room doesn't exist!
+							{:else}This room already exists!{/if}
+						</span>
+					{/if}
+					<Button
+						--bg="linear-gradient(to bottom, rgba(40,40,40,0.25), rgb(20,20,20,0.25))"
+						--hover-bg="linear-gradient(to bottom, rgba(50,50,50,0.35), rgb(30,30,30,0.35))"
+						on:click={() => {
+							showForm = false;
+						}}>Go Back</Button
+					>
+				</form>
+			{/if}
 		</div>
 	{:else}
 		<div in:slide out:slide class="join__connect">
@@ -65,7 +195,7 @@
 
 {#if $address !== ROOT_ADDRESS}
 	<section class="rooms__container">
-		<h2>My Conferences</h2>
+		<h2>My Rooms</h2>
 		<div class="rooms">
 			{#if $myRooms && $myRooms.length}
 				{#each $myRooms as room}
@@ -78,7 +208,7 @@
 				</p>
 			{/if}
 		</div>
-		<h2>All Conferences</h2>
+		<h2>All Rooms</h2>
 
 		<div class="rooms">
 			{#if $rooms && $rooms.length}
@@ -101,11 +231,12 @@
 	.join__action {
 		cursor: pointer;
 		color: var(--color-aqua);
-		border: 2px solid var(--color-blue-20);
-		border-radius: 8px;
-		padding: 6px 24px;
+		border: 2px solid transparent;
+		padding: 0px 18px;
 		user-select: none;
-		background: hsla(var(--color-blue-base), 15%, 70%);
+		background: hsla(var(--color-blue-base), 32%, 42%);
+		text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.21);
+		box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.18);
 	}
 	.join__action:hover {
 		border-color: var(--color-aqua-60);
@@ -123,41 +254,63 @@
 		color: white;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+		align-items: flex-start;
+		justify-content: flex-start;
 		width: 100vw;
+		text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.18);
 	}
 
 	.join__hero h1 {
-		margin: 42px auto 12px auto;
-		text-align: center;
+		margin: 24px auto;
+		text-align: right;
+		width: 100%;
 		line-height: 1.25;
 		z-index: 1;
+	}
+	.helper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 16px;
+		padding-bottom: 12px;
+		opacity: 0.69;
+	}
+	.helper label {
+		width: 100%;
+		padding-right: 12px;
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		text-align: right;
 	}
 
 	.join__hero form {
 		z-index: 1;
-		display: inline-flex;
+		display: flex;
+		flex-direction: column;
+		line-height: 1.25;
+		justify-content: flex-end;
 	}
 
-	.join__hero input,
-	.join__hero :global(button) {
-		border-radius: 12px;
+	.join__hero input:not([type='checkbox']) {
 		font-size: 42px;
 		height: 64px;
 		padding: 12px 24px;
 		z-index: 1;
 	}
+
+	.join__hero :global(button) {
+		z-index: 1;
+	}
+	.join__hero form > div {
+		display: flex;
+		margin: 12px 0;
+	}
 	.join__hero input {
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
 		background: hsla(var(--color-blue-base), 15%, 70%);
-		width: 100%;
-	}
-	.join__hero img.ethlogo {
-		position: absolute;
-		z-index: 0;
-		pointer-events: none;
+		flex: 1 1 auto;
 	}
 	.join__form,
 	.join__connect {
@@ -166,6 +319,12 @@
 		align-items: center;
 		justify-content: center;
 		width: 100%;
+	}
+	.join__next {
+		display: flex;
+		justify-content: flex-end;
+		width: 100%;
+		padding-top: 24px;
 	}
 	section.rooms__container,
 	section.tip {
@@ -179,6 +338,7 @@
 	}
 	.rooms {
 		display: flex;
+		flex-wrap: wrap;
 		padding: 24px 12px;
 		margin-bottom: 24px;
 	}
@@ -197,6 +357,35 @@
 		background: var(--color-blue-30);
 	}
 
+	.join__hero img.ethlogo {
+		position: absolute;
+		z-index: 0;
+		pointer-events: none;
+		animation-name: bounce;
+		animation-delay: 0;
+		animation-duration: 30s;
+		animation-iteration-count: infinite;
+		animation-timing-function: linear;
+		transform: translateY(-50%) translateX(-50%);
+		top: 40px;
+		left: 4px;
+		animation-duration: 10s;
+	}
+	@keyframes bounce {
+		0% {
+			height: 420px;
+			transform: translateY(-50%) translateX(-50%) rotate(0deg);
+		}
+		50% {
+			transform: translateY(-50%) translateX(-50%) rotate(180deg);
+			height: 200px;
+		}
+		100% {
+			height: 420px;
+			transform: translateY(-50%) translateX(-50%) rotate(359deg);
+		}
+	}
+
 	@media (max-width: 420px) {
 		.rooms {
 			flex-direction: column;
@@ -207,7 +396,7 @@
 		.join__hero {
 			padding: 24px 48px;
 			font-size: 48px;
-			min-height: 400px;
+			overflow: hidden;
 		}
 		.join__hero form {
 			margin: 48px auto 24px auto;

@@ -12,6 +12,7 @@
 	export let success = false;
 	export let error = false;
 	export let size = 'large';
+	export let resetOnSuccess = true;
 
 	async function onSendTip() {
 		if (sending) return false;
@@ -34,6 +35,13 @@
 		if (tx) {
 			console.log('transaction success', tx);
 			success = true;
+			if (resetOnSuccess) {
+				setTimeout(() => {
+					error = false;
+					success = false;
+					sending = false;
+				}, 5000);
+			}
 		}
 		sending = false;
 	}
@@ -56,8 +64,8 @@
 {:else}
 	<Button
 		{size}
-		--bg="linear-gradient(to bottom, var(--color-orange-60), var(--color-red-60))"
-		--hover-bg="linear-gradient(to bottom, var(--color-orange), var(--color-red))"
+		--bg="linear-gradient(to bottom, var(--color-red), var(--color-red-60))"
+		--hover-bg="linear-gradient(to bottom, var(--color-red-60), var(--color-red))"
 		on:click={onSendTip}
 		disabled={sending}
 	>
