@@ -38,6 +38,7 @@
 			provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
 			await provider.enable();
 		} else {
+			console.log('Given Provider');
 			provider = Web3.givenProvider;
 		}
 		$web3 = new Web3(provider);
@@ -73,14 +74,14 @@
 		await getBalance();
 	}
 
-	export async function getBalance(): Promise<string> {
+	export async function getBalance(): Promise<number> {
 		if (web3 && $web3 && $address !== ROOT_ADDRESS && !balanceLoading) {
 			balanceLoading = true;
 			$balance.wei = await $web3.eth.getBalance($address);
 			$balance.eth = $web3.utils.fromWei($balance.wei, 'ether');
 			balanceLoading = false;
 		}
-		return $balance;
+		return $balance.eth;
 	}
 
 	export async function requestAccounts(): Promise<void> {

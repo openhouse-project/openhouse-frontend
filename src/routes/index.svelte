@@ -1,12 +1,14 @@
 <script>
 	import { getContext } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
+	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
+
 	import { ROOT_ADDRESS } from '$lib/components/MonoChain.svelte';
 	import Button from '$lib/components/Button.svelte';
-	import { goto } from '$app/navigation';
-	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
-	import { writable } from 'svelte/store';
 	import Icon from '$lib/components/Icon.svelte';
+	import Input from '$lib/components/Input.svelte';
 
 	const chain = getContext('chain');
 	const address = getContext('address');
@@ -151,7 +153,7 @@
 					</label>
 
 					<div>
-						<input
+						<Input
 							on:input={onNameInput}
 							type="text"
 							name="roomName"
@@ -165,7 +167,7 @@
 					{#if action === 'Create'}
 						<div transition:slide class="helper">
 							<label for="public">Anyone can view member list & topic</label>
-							<input type="checkbox" name="public" id="public" bind:checked={createPublic} />
+							<Input type="checkbox" name="public" id="public" bind:checked={createPublic} />
 						</div>
 					{/if}
 					{#if !formValid}
@@ -263,6 +265,12 @@
 		width: 100vw;
 		text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.18);
 		overflow: hidden;
+
+		--input-background: hsla(var(--color-blue-base), 15%, 70%);
+		--input-font-size: 28px;
+		--input-padding: 12px 24px;
+		--input-line-height: 64px;
+		--input-height: 64px;
 	}
 
 	.join__hero h1 {
@@ -297,25 +305,12 @@
 		box-sizing: border-box;
 	}
 
-	.join__hero input:not([type='checkbox']) {
-		font-size: 42px;
-		height: 64px;
-		padding: 12px 24px;
-		z-index: 1;
-	}
-
 	.join__hero :global(button) {
 		z-index: 1;
 	}
 	.join__hero form > div {
 		display: flex;
 		margin: 12px 0;
-	}
-	.join__hero input {
-		border-top-right-radius: 0;
-		border-bottom-right-radius: 0;
-		background: hsla(var(--color-blue-base), 15%, 70%);
-		flex: 1 1 auto;
 	}
 	.join__form,
 	.join__connect {
@@ -399,9 +394,6 @@
 			text-align: center;
 		}
 		.join__hero form {
-			width: 100%;
-		}
-		.join__hero form input[type='text'] {
 			width: 100%;
 		}
 		.join__hero span:not(.join__action) {
