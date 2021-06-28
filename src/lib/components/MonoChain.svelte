@@ -35,9 +35,10 @@
 			const WalletConnect = await import('@walletconnect/web3-provider/dist/umd/index.min.js').then(
 				(mod) => mod.default.default
 			);
-			provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
-			await tick();
-			await provider.enable();
+			if (WalletConnect) {
+				provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
+				await provider.enable();
+			}
 		} else {
 			provider = Web3.givenProvider;
 		}
