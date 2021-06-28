@@ -4,7 +4,7 @@
 </script>
 
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { setContext } from 'svelte';
 	import {
 		accounts,
@@ -36,9 +36,9 @@
 				(mod) => mod.default.default
 			);
 			provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
+			await tick();
 			await provider.enable();
 		} else {
-			console.log('Given Provider');
 			provider = Web3.givenProvider;
 		}
 		$web3 = new Web3(provider);
