@@ -42,6 +42,7 @@
 			provider = Web3.givenProvider;
 		}
 		$web3 = new Web3(provider);
+		window.web3 = $web3;
 		$network = await $web3.eth.net.getId();
 		$ens = new ENS({ provider: $web3.currentProvider, network: $network });
 		await requestAccounts();
@@ -55,11 +56,10 @@
 	});
 
 	export async function syncAccount(): Promise<void> {
-		$accounts = await $web3.eth.getAccounts();
 		if ($accounts[0] !== $address) {
 			console.log('Syncing account', $accounts[0]);
 			$address = $accounts[0];
-			$domain = await ensDomain($address).catch(() => '');
+			$domain = await fetchEnsDomain($address).catch(() => '');
 			$addressName = $domain || $address;
 		}
 		await getBalance();
@@ -117,7 +117,7 @@
 		return challenge;
 	}
 
-	async function ensDomain(address): Promise<string> {
+	export async function fetchEnsDomain(address: string): Promise<string> {
 		return $ens.reverse(address);
 	}
 
@@ -131,4 +131,5 @@
 	chain={$web3}
 	domain={$domain}
 	{requestAccounts}
+	{fetchEnsDomain}
 />

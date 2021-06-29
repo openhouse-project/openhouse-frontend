@@ -74,9 +74,9 @@ header span.balance,
 header span.domain,
 header span.address {
 	overflow: hidden;
-	text-overflow: ellipsis;
 	max-width: 128px;
 	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 #tipbar {
@@ -91,12 +91,23 @@ header span.address {
 
 @media (max-width: 420px) {
 	header {
-		flex-direction: column;
+		font-size: 18px;
 	}
-	header span.balance,
+	header a#brand {
+		font-size: 24px;
+	}
 	header span.domain,
 	header span.address {
-		max-width: 100px;
+		max-width: 90px;
+		margin-right: 18px;
+	}
+	header span.currency {
+		display: none;
+	}
+	header span.currency,
+	header span.balance {
+		max-width: 58px;
+		margin-right: 0;
 	}
 }
 
