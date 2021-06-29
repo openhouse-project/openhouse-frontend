@@ -28,16 +28,13 @@
 	let balanceLoading = false;
 	let balanceCheckInterval;
 	onMount(async () => {
-		console.log('Importing web3');
 		const win = window as any;
 		const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
 		let provider;
-		console.log('Here', Web3.givenProvider);
 		if (!Web3.givenProvider) {
 			const WalletConnect = await import('@walletconnect/web3-provider/dist/umd/index.min.js').then(
 				(mod) => mod.default.default || mod.default
 			);
-			console.log('WalletConnect imported', WalletConnect);
 			if (WalletConnect) {
 				provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
 				await provider.enable();
@@ -51,6 +48,7 @@
 		await requestAccounts();
 		await getBalance();
 		await getToken();
+		await syncAccount();
 		if (win.ethereum) {
 			win.ethereum.on('accountsChanged', onAccountUpdate);
 		}
