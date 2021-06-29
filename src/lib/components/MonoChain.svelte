@@ -28,40 +28,36 @@
 	let balanceLoading = false;
 	let balanceCheckInterval;
 	onMount(async () => {
-		try {
-			const win = window as any;
-			const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
-			let provider;
-			console.log('Here', Web3.givenProvider);
-			alert('here');
-			if (!Web3.givenProvider) {
-				const WalletConnect = await import(
-					'@walletconnect/web3-provider/dist/umd/index.min.js'
-				).then((mod) => mod.default.default || mod.default);
-				console.log('WalletConnect imported', WalletConnect);
-				if (WalletConnect) {
-					provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
-					await provider.enable();
-				}
-			} else {
-				provider = Web3.givenProvider;
+		console.log('Importing web3');
+		const win = window as any;
+		const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
+		let provider;
+		console.log('Here', Web3.givenProvider);
+		if (!Web3.givenProvider) {
+			const WalletConnect = await import('@walletconnect/web3-provider/dist/umd/index.min.js').then(
+				(mod) => mod.default.default || mod.default
+			);
+			console.log('WalletConnect imported', WalletConnect);
+			if (WalletConnect) {
+				provider = new WalletConnect({ infuraId: `${import.meta.env.VITE_INFURA_ID}` });
+				await provider.enable();
 			}
-			$web3 = new Web3(provider);
-			$network = await $web3.eth.net.getId();
-			$ens = new ENS({ provider: $web3.currentProvider, network: $network });
-			await requestAccounts();
-			await getBalance();
-			await getToken();
-			if (win.ethereum) {
-				win.ethereum.on('accountsChanged', onAccountUpdate);
-			}
-			balanceCheckInterval = setInterval(syncAccount, ACCOUNT_SYNC_INTERVAL);
-			return () => {
-				clearInterval(balanceCheckInterval);
-			};
-		} catch (err) {
-			console.error('Failed to initialize web3', err);
+		} else {
+			provider = Web3.givenProvider;
 		}
+		$web3 = new Web3(provider);
+		$network = await $web3.eth.net.getId();
+		$ens = new ENS({ provider: $web3.currentProvider, network: $network });
+		await requestAccounts();
+		await getBalance();
+		await getToken();
+		if (win.ethereum) {
+			win.ethereum.on('accountsChanged', onAccountUpdate);
+		}
+		balanceCheckInterval = setInterval(syncAccount, ACCOUNT_SYNC_INTERVAL);
+		return () => {
+			clearInterval(balanceCheckInterval);
+		};
 	});
 
 	export async function onAccountUpdate(acc): Promise<void> {
