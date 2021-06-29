@@ -4,7 +4,7 @@
 </script>
 
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
+	import { onMount } from 'svelte';
 	import { setContext } from 'svelte';
 	import {
 		accounts,
@@ -28,7 +28,6 @@
 	let balanceLoading = false;
 	let balanceCheckInterval;
 	onMount(async () => {
-		const win = window as any;
 		const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
 		let provider;
 		if (!Web3.givenProvider) {
@@ -118,11 +117,11 @@
 		return challenge;
 	}
 
-	async function ensDomain(address) {
+	async function ensDomain(address): Promise<string> {
 		return $ens.reverse(address);
 	}
 
-	$: $addressName = $domain || $address;
+	$: $addressName = $domain ?? $address;
 </script>
 
 <slot

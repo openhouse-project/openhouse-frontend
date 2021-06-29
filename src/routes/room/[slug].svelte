@@ -5,6 +5,7 @@
 	import { addressName, address, token } from '$lib/store';
 	import { RingLoader } from 'svelte-loading-spinners';
 	import type { Writable } from 'svelte/store';
+	import { variables } from '$lib/variables';
 	import type Web3 from 'web3';
 	import Button from '$lib/components/Button.svelte';
 	import SendTip from '$lib/components/SendTip.svelte';
@@ -23,7 +24,7 @@
 	let isPublic = true;
 	let createPublic = false;
 
-	const domain = import.meta?.env?.VITE_JITSI_DOMAIN || 'video.collaboratory.io';
+	const domain = variables.jitsiDomain ?? 'video.collaboratory.io';
 
 	function sendTransaction() {
 		loading = true;
