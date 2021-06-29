@@ -49,21 +49,14 @@
 		await getBalance();
 		await getToken();
 		await syncAccount();
-		if (win.ethereum) {
-			win.ethereum.on('accountsChanged', onAccountUpdate);
-		}
 		balanceCheckInterval = setInterval(syncAccount, ACCOUNT_SYNC_INTERVAL);
 		return () => {
 			clearInterval(balanceCheckInterval);
 		};
 	});
 
-	export async function onAccountUpdate(acc): Promise<void> {
-		$accounts = acc;
-		await syncAccount();
-	}
-
 	export async function syncAccount(): Promise<void> {
+		$accounts = await $web3.eth.getAccounts();
 		if ($accounts[0] !== $address) {
 			console.log('Syncing account', $accounts[0]);
 			$address = $accounts[0];
