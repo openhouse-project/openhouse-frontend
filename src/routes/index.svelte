@@ -44,7 +44,7 @@
 				.senderIsInRoom(roomName)
 				.call({ from: $address })
 				.then((isMem) => {
-					isMember = true;
+					isMember = isMem;
 				});
 		}
 		if (action === 'Create' || !isMember) {
@@ -59,7 +59,7 @@
 				.on('confirmation', function (confirmationNumber, receipt) {
 					console.info({ confirmationNumber, receipt });
 					loading = false;
-					goto(`/conference/${roomName}`);
+					goto(`/room/${roomName}`);
 				})
 				.on('receipt', function (receipt) {
 					// receipt example
@@ -73,7 +73,7 @@
 					loading = false;
 				});
 		} else {
-			goto(`/conference/${roomName}`);
+			goto(`/room/${roomName}`);
 		}
 	};
 
@@ -201,12 +201,12 @@
 		<div class="rooms">
 			{#if $myRooms && $myRooms.length}
 				{#each $myRooms as room}
-					<a href="/conference/{room}">{room}</a>
+					<a href="/room/{room}">{room}</a>
 				{/each}
 			{:else}
 				<p>
-					You're not registered for any conferences yet. Join or create one using the form above or
-					the list below.
+					You're not registered for any rooms yet. Join or create one using the form above or the
+					list below.
 				</p>
 			{/if}
 		</div>
@@ -215,12 +215,10 @@
 		<div class="rooms">
 			{#if $rooms && $rooms.length}
 				{#each $rooms as room}
-					<a href="/conference/{room}">{room}</a>
+					<a href="/room/{room}">{room}</a>
 				{/each}
 			{:else}
-				<p>
-					There are no conferences registered yet. Use the form above to be the first to register.
-				</p>
+				<p>There are no rooms registered yet. Use the form above to be the first to register.</p>
 			{/if}
 		</div>
 	</section>

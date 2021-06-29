@@ -93,6 +93,11 @@ header span.address {
 	header {
 		flex-direction: column;
 	}
+	header span.balance,
+	header span.domain,
+	header span.address {
+		max-width: 100px;
+	}
 }
 
 @media (min-width: 1024px) {
