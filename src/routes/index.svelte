@@ -125,12 +125,13 @@
 			{:else if !showForm}
 				<h1>
 					<span>I want to</span>
-					<span
+					<button
 						on:click={() => {
 							action = action === 'Join' ? 'Create' : 'Join';
 						}}
 						class="join__action {action.toLowerCase()}"
-						>{action} <Icon --size="42px">expand_more</Icon></span
+						role="button"
+						tabindex="0">{action} <Icon --size="42px">expand_more</Icon></button
 					> <span>a Room</span>
 				</h1>
 				<div class="join__next">
@@ -237,6 +238,7 @@
 		color: var(--color-aqua);
 		border: 2px solid transparent;
 		padding: 0 6px 0 12px;
+		font-size: 64px;
 		user-select: none;
 		background: hsla(var(--color-blue-base), 32%, 42%);
 		text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.21);
@@ -251,7 +253,7 @@
 	.join__hero {
 		position: relative;
 		padding: 12px 24px;
-		font-size: 24px;
+		font-size: 42px;
 		background-color: #4158d0;
 		background-image: linear-gradient(43deg, #4158d0 0%, #c850c0 46%, #ffcc70 100%);
 
@@ -407,7 +409,6 @@
 	@media (min-width: 1024px) {
 		.join__hero {
 			padding: 24px 48px;
-			font-size: 48px;
 			overflow: hidden;
 		}
 		.join__hero form {
