@@ -100,4 +100,10 @@
 		--color-aqua-90: hsl(var(--color-aqua-base), 90%);
 		--color-aqua-95: hsl(var(--color-aqua-base), 95%);
 	}
+
+	.theme {
+		font-size: 18px;
+		line-height: 1.125em;
+		color: var(--color-blue-95);
+	}
 </style>

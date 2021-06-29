@@ -1,0 +1,107 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+	font-family: 'Roboto', sans-serif;
+	background: var(--color-blue-10);
+}
+.theme h1,
+.theme h2,
+.theme h3,
+.theme h4,
+.theme h5,
+.theme h6 {
+	margin: 0;
+	padding: 0;
+}
+.theme * {
+	box-sizing: border-box;
+}
+.walletconnect-connect__button__text {
+	font-size: 18px !important;
+}
+
+header {
+	line-height: 42px;
+	padding: 6px 24px;
+	display: flex;
+	justify-content: space-between;
+	background: linear-gradient(to top, var(--color-blue-50), var(--color-blue-40));
+	color: var(--color-aqua-70);
+}
+
+header a#brand {
+	margin: 0;
+	font-size: 28px;
+	color: var(--color-aqua-70);
+	text-decoration: none;
+}
+
+header section {
+	display: flex;
+}
+
+header section.connect {
+	justify-content: flex-end;
+}
+
+main > h1 {
+	margin: 12px 0 18px 0;
+}
+main > h2,
+main > h3,
+main > h4,
+main > h5,
+main > h6 {
+	margin: 6px 0;
+}
+
+main > hr {
+	margin: 12px 0;
+	border: none;
+	border-bottom: 2px solid whitesmoke;
+}
+
+header span.domain,
+header span.address {
+	font-weight: bold;
+	margin-right: 24px;
+}
+header span.currency {
+	margin-right: 8px;
+}
+header span.balance,
+header span.domain,
+header span.address {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 128px;
+	white-space: nowrap;
+}
+
+#tipbar {
+	display: flex;
+	padding: 12px;
+	align-items: center;
+	justify-content: space-between;
+	background: var(--color-blue-20);
+	color: var(--color-aqua-70);
+	padding: 12px 24px;
+}
+
+@media (max-width: 420px) {
+	header {
+		flex-direction: column;
+	}
+	header span.balance,
+	header span.domain,
+	header span.address {
+		max-width: 100px;
+	}
+}
+
+@media (min-width: 1024px) {
+	header section {
+		width: 33%;
+	}
+}

@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { getContext, tick } from 'svelte';
 	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
-	import { addressName, ethAddress, token } from '$lib/store';
+	import { addressName, address, token } from '$lib/store';
 	import { RingLoader } from 'svelte-loading-spinners';
 	import type { Writable } from 'svelte/store';
 	import { variables } from '$lib/variables';
@@ -30,7 +30,7 @@
 		loading = true;
 		contract.methods
 			.addRoom($page.params.slug, createPublic)
-			.send({ from: $ethAddress })
+			.send({ from: $address })
 			.on('transactionHash', function (transactionHash) {
 				console.info({ transactionHash });
 			})
@@ -57,9 +57,9 @@
 			tick().then(() => {
 				const options = {
 					roomName: $page.params.slug,
-					height: 700,
+					height: 600,
 					userInfo: {
-						displayName: $ethAddress
+						displayName: $address
 					},
 					parentNode: (window as any).document.querySelector('#meet'),
 					jwt: $token
@@ -77,23 +77,23 @@
 
 	$: if (chain && $chain && $token && $addressName && !iframeApi) {
 		contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
-
 		contract.methods
 			.roomExists($page.params.slug)
-			.call({ from: $ethAddress })
+			.call({ from: $address })
 			.then((exists) => {
+				console.log('Room exists', $page.params.slug, $address, exists);
 				roomExists = exists;
 
 				if (roomExists) {
 					contract.methods
 						.senderIsInRoom($page.params.slug)
-						.call({ from: $ethAddress })
+						.call({ from: $address })
 						.then((isMem) => {
 							isMember = isMem;
 							if (!isMember) {
 								contract.methods
 									.roomIsPublic($page.params.slug)
-									.call({ from: $ethAddress })
+									.call({ from: $address })
 									.then((isPub) => {
 										isPublic = isPub;
 									});
@@ -122,16 +122,14 @@
 			<div class="room__create">
 				<p>This conference does not exist yet!</p>
 				<Button fullWidth size="large" on:click={sendTransaction}>Create this Conference</Button>
-				<p>
-					<label for="public"
-						>Anyone can view member list & topic <input
-							type="checkbox"
-							name="public"
-							id="public"
-							bind:checked={createPublic}
-						/></label
-					>
-				</p>
+				<label for="public"
+					>Anyone can view member list & topic <input
+						type="checkbox"
+						name="public"
+						id="public"
+						bind:checked={createPublic}
+					/></label
+				>
 			</div>
 		{:else if !isPublic}
 			<p>
@@ -164,6 +162,8 @@
 						({dominantSpeaker})
 					</div>
 				</div>
+			{:else}
+				Waiting for participants
 			{/if}
 		</div>
 	{/if}
