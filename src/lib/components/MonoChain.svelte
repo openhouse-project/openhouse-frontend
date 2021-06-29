@@ -31,6 +31,7 @@
 		const win = window as any;
 		const Web3 = await import('web3/dist/web3.min.js').then((mod) => mod.default);
 		let provider;
+		console.log('Here', Web3.givenProvider);
 		if (!Web3.givenProvider) {
 			const WalletConnect = await import('@walletconnect/web3-provider/dist/umd/index.min.js').then(
 				(mod) => mod.default.default || mod.default
@@ -134,6 +135,12 @@
 
 	$: $addressName = $domain || $address;
 </script>
+
+<svelte:window
+	on:beforeunload|preventDefault={() => {
+		console.log('Preventing reload');
+	}}
+/>
 
 <slot
 	address={$address}
