@@ -174,8 +174,18 @@
 					{#if !formValid}
 						<span transition:slide class="helper">
 							{#if roomName === ''}You must supply a valid room name.
-							{:else if action === 'Join'}This room doesn't exist!
-							{:else}This room already exists!{/if}
+							{:else if action === 'Join'}This room doesn't exist! <a
+									href="#"
+									on:click={() => {
+										action = 'Create';
+									}}>Create it instead</a
+								>
+							{:else}This room already exists! <a
+									href="#"
+									on:click={() => {
+										action = 'Join';
+									}}>Join it instead</a
+								>{/if}
 						</span>
 					{/if}
 					<Button
@@ -271,6 +281,14 @@
 		--input-padding: 12px 24px;
 		--input-line-height: 64px;
 		--input-height: 64px;
+	}
+
+	.join__hero a {
+		text-decoration: none;
+		font-weight: bold;
+		color: var(--color-aqua-80);
+		text-shadow: none;
+		margin: 0 0 0 6px;
 	}
 
 	.join__hero h1 {

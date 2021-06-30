@@ -1,3 +1,2 @@
 import Redis from 'ioredis';
-import env from './env';
-export default new Redis(env.REDIS_URL);
+export default new Redis(process.env['REDIS_URL'] || "redis://localhost:6379/0");
