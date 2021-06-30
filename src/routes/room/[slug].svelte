@@ -28,7 +28,7 @@
 	let createPublic = false;
 	let infts = [];
 	let nfts = [];
-	let backgroundImageUrl = "";
+	let backgroundImageUrl = "https://austingriffith.com/images/paintings/zebra.jpg";
 
 	const domain = variables.jitsiDomain ?? 'video.collaboratory.io';
 
@@ -81,7 +81,12 @@
 	}
 
 	function changeBackground (imgUrl) {
+		console.log("Changing background to " + imgUrl);
 		backgroundImageUrl = imgUrl;
+		iframeApi.executeCommand('overwriteConfig',
+			 { backgroundImageUrl: imgUrl }
+		);
+		//initializeJitsi();
 	}
 
 	function sendTransaction() {
@@ -121,7 +126,7 @@
 					},
 					parentNode: (window as any).document.querySelector('#meet'),
 					jwt: $token,
-					backgroundImageUrl:backgroundImageUrl?backgroundImageUrl:"https://austingriffith.com/images/paintings/zebra.jpg"
+					configOverwrite: { backgroundImageUrl: backgroundImageUrl }
 				};
 				iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
 				iframeApi.addEventListener('dominantSpeakerChanged', (event) => {
@@ -229,22 +234,26 @@
 	{/if}
 </section>
 <section>
-	<h2>Available NFTs to be used as background</h2>
-	{#if infts && infts.length}
-			{#each infts as item}
-				<div>
-					<span>#{item.id}</span> {item.name}
-				</div>
-				<div>
-					<a href="#" on:click={changeBackground(item.image)}>
-						<img src={item.image} alt={item.description} />
-					</a>
-				</div>
-				<div>{item.description}</div>
-			{/each}
-	{:else}
-		<p>There are no NFTs in your account</p>
-	{/if}
+	<div class="nfts">
+		<h2>Available NFTs to be used as background</h2>
+		{#if infts && infts.length}
+				{#each infts as item}
+					<div class="nft">
+						<div>
+							{item.name}
+						</div>
+						<div>
+							<a href="#" on:click={changeBackground(item.image)}>
+								<img src={item.image} height="200px" alt={item.description} />
+							</a>
+						</div>
+						<div>{item.description}</div>
+					</div>
+				{/each}
+		{:else}
+			<p>There are no NFTs in your account</p>
+		{/if}
+	</div>
 </section>
 <style>
 	section {
@@ -276,5 +285,17 @@
 		text-align: center;
 		margin: auto;
 		max-width: 420px;
+	}
+	.nfts {
+		width:100%;
+		height:1000px;
+	}
+
+	.nft {
+		width: 20%;
+		display:inline-block;
+		margin-right: -4px;
+		box-sizing: border-box;
+		padding: 1%;
 	}
 </style>
