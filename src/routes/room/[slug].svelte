@@ -9,6 +9,9 @@
 	import type Web3 from 'web3';
 	import Button from '$lib/components/Button.svelte';
 	import SendTip from '$lib/components/SendTip.svelte';
+	import { RARIBLE_ADDRESS, RARIBLE_READ_CONTRACT } from '$lib/contracts/RaribleCollectible.abi';
+
+	//const ipfs = create({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 	const chain: Writable<Web3> = getContext('chain');
 
@@ -23,8 +26,63 @@
 	let isMember = false;
 	let isPublic = true;
 	let createPublic = false;
+	let infts = [];
+	let nfts = [];
+	let backgroundImageUrl = "";
 
 	const domain = variables.jitsiDomain ?? 'video.collaboratory.io';
+
+	let raribleContract;
+
+	async function getIpfsPayload(url) {
+		const response = await fetch(url);
+        let nftManifest = await response.json();
+		return nftManifest;
+	}
+	function getNfts() {
+		raribleContract = new $chain.eth.Contract(RARIBLE_READ_CONTRACT, RARIBLE_ADDRESS);
+		const balanceMethod = raribleContract.methods.balanceOf($address);
+		balanceMethod.call().then((balance) => {
+			console.log("🤗 balance:", balance);
+			for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+				try {
+					console.log("Getting token index", tokenIndex);
+					raribleContract.methods.tokenOfOwnerByIndex($address, tokenIndex).call().then((tokenId) => {
+						console.log("tokenId", tokenId);
+
+						const tokenURI = raribleContract.methods.tokenURI(tokenId).call().then((tokenURI) =>{
+							console.log("tokenURI", tokenURI);
+
+							const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+							console.log("ipfsHash", ipfsHash);
+
+							//const jsonManifestBuffer = new getFromIPFS(ipfsHash);
+
+							try {
+								getIpfsPayload(tokenURI).then(jsonManifest => {
+									console.log("jsonManifest", jsonManifest);
+									nfts.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+									console.log(tokenIndex + " idx balance "+balance);
+									if (nfts.length == balance) {
+										infts=nfts;
+									}
+								});
+							} catch (e) {
+								console.log(e);
+							}
+						})
+					});
+				} catch (e) {
+					console.log(e);
+				}
+			}
+			console.log(nfts);
+		});
+	}
+
+	function changeBackground (imgUrl) {
+		backgroundImageUrl = imgUrl;
+	}
 
 	function sendTransaction() {
 		loading = true;
@@ -62,7 +120,8 @@
 						displayName: $address
 					},
 					parentNode: (window as any).document.querySelector('#meet'),
-					jwt: $token
+					jwt: $token,
+					backgroundImageUrl:backgroundImageUrl?backgroundImageUrl:"https://austingriffith.com/images/paintings/zebra.jpg"
 				};
 				iframeApi = new (window as any).JitsiMeetExternalAPI(domain, options);
 				iframeApi.addEventListener('dominantSpeakerChanged', (event) => {
@@ -72,6 +131,7 @@
 				});
 				connected = true;
 			});
+			getNfts();
 		}
 	}
 
@@ -168,7 +228,24 @@
 		</div>
 	{/if}
 </section>
-
+<section>
+	<h2>Available NFTs to be used as background</h2>
+	{#if infts && infts.length}
+			{#each infts as item}
+				<div>
+					<span>#{item.id}</span> {item.name}
+				</div>
+				<div>
+					<a href="#" on:click={changeBackground(item.image)}>
+						<img src={item.image} alt={item.description} />
+					</a>
+				</div>
+				<div>{item.description}</div>
+			{/each}
+	{:else}
+		<p>There are no NFTs in your account</p>
+	{/if}
+</section>
 <style>
 	section {
 		padding: 24px 12px 6px 12px;
