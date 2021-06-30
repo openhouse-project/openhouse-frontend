@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import redis from '$lib/server/redis';
 import web3 from '$lib/server/web3';
-import env from '$lib/server/env';
 import cookie from 'cookie';
 
 export async function post({ body }): Promise<any> {
@@ -40,14 +39,14 @@ export async function post({ body }): Promise<any> {
 				name: address
 			}
 		},
-		aud: env.JWT_ISSUER_ID, // From Jitsi JWT example
-		iss: env.JWT_ISSUER_ID, // Needs to match the Jitsi config
+		aud: process.env['JWT_ISSUER_ID'], // From Jitsi JWT example
+		iss: process.env['JWT_ISSUER_ID'], // Needs to match the Jitsi config
 		sub: 'video.collaboratory.io', // Not sure this is validated by Jitsi
 		room: '*', // All rooms allowed
 		exp: Math.floor(Date.now() / 1000) + 60 * 60, // Expiration in 1 hour
 		nbf: Math.floor(Date.now() / 1000) - 30 // Not good before 30 seconds ago
 	};
-	const token = jwt.sign(payload, env.JWT_APP_SECRET);
+	const token = jwt.sign(payload, process.env['JWT_APP_SECRET']);
 	return {
 		status: 200,
 		headers: {
