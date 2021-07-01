@@ -80,13 +80,18 @@
 	let roomNameDebounce;
 	let roomExists;
 	const onNameInput = () => {
-		formValid = false;
+		if (!roomName || !roomName.length || !contract) {
+			formValid = false;
+			return;
+		}
+		loading = true;
 		roomNameExists = false;
-		if (!roomName || !roomName.length || !contract) return;
 		clearTimeout(roomNameDebounce);
 		roomNameDebounce = setTimeout(async () => {
 			roomExists = contract.methods.roomExists(roomName);
 			roomNameExists = await roomExists.call();
+			formValid = (action === 'Join' && roomNameExists) || (action === 'Create' && !roomNameExists);
+			loading = false;
 		}, 250);
 	};
 
