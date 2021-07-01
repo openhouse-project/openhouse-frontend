@@ -9,6 +9,7 @@
 	import type Web3 from 'web3';
 	import Button from '$lib/components/Button.svelte';
 	import SendTip from '$lib/components/SendTip.svelte';
+	import { goto } from '$app/navigation';
 
 	const chain: Writable<Web3> = getContext('chain');
 
@@ -71,8 +72,28 @@
 					dominantSpeaker = participant?.displayName;
 				});
 				connected = true;
+				pollForMembershipChanges();
 			});
 		}
+	}
+
+	async function pollForMembershipChanges() {
+		while (isMember && connected) {
+			let isMem = await contract.methods.senderIsInRoom($page.params.slug).call({ from: $address });
+			if (!isMem) {
+				isMember = isMem;
+				iframeApi.executeCommand('hangup');
+				goto("/");
+			}
+			console.log('isMem = ' + isMem);
+			await sleep(1000);
+		}
+	}
+
+	function sleep(ms) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, ms);
+		});
 	}
 
 	$: if (chain && $chain && $token && $addressName && !iframeApi) {

@@ -1,124 +1,142 @@
 //export const OPENHOUSE_ADDRESS = '0xFf3D0372a03118cB6343EAEE7A7918e73982e872';	 // Rinkeby Testnet
-export const OPENHOUSE_ADDRESS = '0xd19f41Da8f24b0Cec339DceD41dE2FcABe22647a'; // Ropsten Testnet
+export const OPENHOUSE_ADDRESS = '0x1828EB3C22e07339711B42f31981c92aa1D39649'; // Ropsten Testnet
 export const OPENHOUSE_CONTRACT: any[] = [
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: 'string',
-				name: 'name',
-				type: 'string'
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
 			},
 			{
-				internalType: 'bool',
-				name: 'isPublic',
-				type: 'bool'
+				"internalType": "bool",
+				"name": "isPublic",
+				"type": "bool"
 			}
 		],
-		name: 'addRoom',
-		outputs: [],
-		stateMutability: 'nonpayable',
-		type: 'function'
+		"name": "addRoom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		inputs: [],
-		name: 'listRooms',
-		outputs: [
+		"inputs": [
 			{
-				internalType: 'string[]',
-				name: '',
-				type: 'string[]'
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "room",
+				"type": "string"
 			}
 		],
-		stateMutability: 'view',
-		type: 'function'
+		"name": "removeUserFromRoom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		inputs: [],
-		name: 'listSenderRooms',
-		outputs: [
+		"inputs": [],
+		"name": "listRooms",
+		"outputs": [
 			{
-				internalType: 'string[]',
-				name: '',
-				type: 'string[]'
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
 			}
 		],
-		stateMutability: 'view',
-		type: 'function'
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [],
+		"name": "listSenderRooms",
+		"outputs": [
 			{
-				internalType: 'string',
-				name: 'name',
-				type: 'string'
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
 			}
 		],
-		name: 'members',
-		outputs: [
-			{
-				internalType: 'address[]',
-				name: '',
-				type: 'address[]'
-			}
-		],
-		stateMutability: 'view',
-		type: 'function'
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: 'string',
-				name: 'name',
-				type: 'string'
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
 			}
 		],
-		name: 'roomExists',
-		outputs: [
+		"name": "members",
+		"outputs": [
 			{
-				internalType: 'bool',
-				name: '',
-				type: 'bool'
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
 			}
 		],
-		stateMutability: 'view',
-		type: 'function'
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: 'string',
-				name: 'name',
-				type: 'string'
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
 			}
 		],
-		name: 'roomIsPublic',
-		outputs: [
+		"name": "roomExists",
+		"outputs": [
 			{
-				internalType: 'bool',
-				name: '',
-				type: 'bool'
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
-		stateMutability: 'view',
-		type: 'function'
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: 'string',
-				name: 'name',
-				type: 'string'
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
 			}
 		],
-		name: 'senderIsInRoom',
-		outputs: [
+		"name": "roomIsPublic",
+		"outputs": [
 			{
-				internalType: 'bool',
-				name: '',
-				type: 'bool'
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
-		stateMutability: 'view',
-		type: 'function'
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "senderIsInRoom",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	}
 ];
