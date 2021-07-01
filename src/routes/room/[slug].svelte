@@ -9,6 +9,7 @@
 	import type Web3 from 'web3';
 	import Button from '$lib/components/Button.svelte';
 	import SendTip from '$lib/components/SendTip.svelte';
+	import Participant from '$lib/components/Participant.svelte';
 	import { goto } from '$app/navigation';
 
 	const chain: Writable<Web3> = getContext('chain');
@@ -19,6 +20,7 @@
 	let transactionFailed = false;
 	let loading = false;
 	let dominantSpeaker: false | string = false;
+	let participantsList: Array<any> = [];
 
 	let roomExists = false;
 	let isMember = false;
@@ -86,6 +88,7 @@
 				goto("/");
 			}
 			console.log('isMem = ' + isMem);
+			participantsList = iframeApi.getParticipantsInfo();
 			await sleep(1000);
 		}
 	}
@@ -187,6 +190,16 @@
 				Waiting for participants
 			{/if}
 		</div>
+		{#if participantsList.length > 1}
+		{#each participantsList as p}
+		<div class="participants">
+			<div>
+				<Participant user={p.displayName} room={$page.params.slug}/>
+				{p.displayName}
+			</div>
+		</div>
+	{/each}
+		{/if}
 	{/if}
 </section>
 
