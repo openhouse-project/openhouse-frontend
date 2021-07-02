@@ -83,11 +83,9 @@
 	function changeBackground (imgUrl) {
 		console.log("Changing background to " + imgUrl);
 		backgroundImageUrl = imgUrl;
-		iframeApi.executeCommand('overwriteConfig',
-			 { backgroundImageUrl: imgUrl }
-		);
-		//initializeJitsi();
+		(window as any).openhouseBackgroundExtenstion.storeImgInLocalStorage(imgUrl);
 	}
+
 
 	function sendTransaction() {
 		loading = true;
