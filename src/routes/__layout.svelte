@@ -17,10 +17,10 @@
 				<a id="brand" href="/">OpenHouse</a>
 			</section>
 			<section class="connect">
-				{#if address === ROOT_ADDRESS}
+				{#if [ROOT_ADDRESS, undefined, ''].includes(address)}
 					<Button on:click={requestAccounts}>Connect</Button>
 				{:else}
-					{#if domain}
+					{#if domain !== ''}
 						<span class="domain">{domain}</span>
 					{:else}
 						<span class="address">{address}</span>

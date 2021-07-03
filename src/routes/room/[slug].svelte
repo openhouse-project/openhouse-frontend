@@ -75,13 +75,12 @@
 		}
 	}
 
-	$: if (chain && $chain && $token && $addressName && !iframeApi) {
+	$: if (chain && $chain && $token && $address && !iframeApi) {
 		contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
 		contract.methods
 			.roomExists($page.params.slug)
-			.call({ from: $address })
+			.call()
 			.then((exists) => {
-				console.log('Room exists', $page.params.slug, $address, exists);
 				roomExists = exists;
 
 				if (roomExists) {
@@ -93,7 +92,7 @@
 							if (!isMember) {
 								contract.methods
 									.roomIsPublic($page.params.slug)
-									.call({ from: $address })
+									.call()
 									.then((isPub) => {
 										isPublic = isPub;
 									});

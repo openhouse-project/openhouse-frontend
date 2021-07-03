@@ -102,7 +102,8 @@
 		listRooms.call().then((result) => {
 			$rooms = result;
 		});
-
+	}
+	$: if (chain && $chain && $address) {
 		const listMyRooms = contract.methods.listSenderRooms();
 		listMyRooms.call({ from: $address }).then((result) => {
 			$myRooms = result;
