@@ -4,11 +4,15 @@
 	import { writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
 	import { OPENHOUSE_ADDRESS, OPENHOUSE_CONTRACT } from '$lib/contracts/openhouse';
-
+	import {
+		PARTICIPANT_ACCESS_TOKEN_BYTECODE,
+		PARTICIPANT_ACCESS_TOKEN_CONTRACT
+	} from '$lib/contracts/pat';
 	import { ROOT_ADDRESS } from '$lib/components/MonoChain.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Input from '$lib/components/Input.svelte';
+import { token } from '$lib/store';
 
 	const chain = getContext('chain');
 	const address = getContext('address');
@@ -30,6 +34,9 @@
 	let roomNameExists = false;
 	let formValid = false;
 	let loading = false;
+	let creating = false;
+	let minting = false;
+	let joining = false;
 	let createPublic = false;
 	let transactionFailed = false;
 	let transactionSubmitted = false;
@@ -40,14 +47,78 @@
 	const onFormSubmit = async () => {
 		let isMember = false;
 		if (action === 'Join' && roomNameExists) {
-			await contract.methods
-				.senderIsInRoom(roomName)
-				.call({ from: $address })
-				.then((isMem) => {
-					isMember = isMem;
-				});
+			const patContractAddress = await contract.methods
+				.getAddressForRoom(roomName)
+				.call({from: $address});
+			console.log('Found contract adddress: ' + patContractAddress);
+			const patContract = new $chain.eth.Contract(PARTICIPANT_ACCESS_TOKEN_CONTRACT, patContractAddress);
+			let tokenBalance = await patContract.methods
+				.balanceOf($address)
+				.call({ from: $address });
+			if (tokenBalance > 0) {
+				isMember = true;
+			}
 		}
-		if (action === 'Create' || !isMember) {
+		if (action === 'Create') {
+			creating = true;
+			patContract = await createRoom();
+			creating = false;
+			console.log(patContract.options.address); // instance with the new contract address
+			// This mints a token to the caller's address
+			let tokenMinted = false;
+			minting = true;
+			patContract.methods
+				.safeMint($address)
+				.send( { from: $address })
+				.on('transactionHash', function (transactionHash) {
+					console.info({ transactionHash });
+				})
+				.on('confirmation', function (confirmationNumber, receipt) {
+					console.info({ confirmationNumber, receipt });
+					// When the access token is minted, call the OpenHouse contract to register the room->PAT contract mapping
+					if (!tokenMinted) {
+						minting = false;
+						tokenMinted = true;
+						joining = true;
+						contract.methods
+							.createRoomWithContract(roomName, patContract.options.address, createPublic)
+							.send({ from: $address })
+							.on('transactionHash', function (transactionHash) {
+								console.info({ transactionHash });
+							})
+							.on('confirmation', function (confirmationNumber, receipt) {
+								loading = false;
+								isMember = true;
+								console.info({ confirmationNumber, receipt });
+								joining = false;
+								goto(`/room/${roomName}`);
+							})
+							.on('receipt', function (receipt) {
+								// receipt example
+								console.info({ receipt });
+							})
+							.on('error', function (error, receipt) {
+								// If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+								console.error(error);
+								console.info({ receipt });
+								transactionFailed = true;
+								loading = false;
+								tokenMinted = false;
+							});
+					}
+				})
+				.on('receipt', function (receipt) {
+					// receipt example
+					console.info({ receipt });
+				})
+				.on('error', function (error, receipt) {
+					// If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+					console.error(error);
+					console.info({ receipt });
+					transactionFailed = true;
+					loading = false;
+				});
+		} else if (action === 'Join' && !isMember) {
 			loading = true;
 			contract.methods
 				.addRoom(roomName, createPublic)
@@ -77,6 +148,29 @@
 		}
 	};
 
+	async function createRoom() {
+		loading = true;
+		let newContractInstance = await patContract
+			.deploy({
+				data: PARTICIPANT_ACCESS_TOKEN_BYTECODE,
+				arguments: [$address]
+			})
+			.send({ from: $address }, function (error, transactionHash) {})
+			.on('error', function (error) {
+				console.error(error);
+				transactionFailed = true;
+				loading = false;
+			})
+			.on('transactionHash', function (transactionHash) {
+				console.info('Transaction hash: ' + transactionHash);
+			})
+			.on('receipt', function (receipt) {
+				console.info('Deployed address: ' + receipt.contractAddress); // contains the new contract address
+			})
+			.on('confirmation', function (confirmationNumber, receipt) {});
+		return newContractInstance;
+	}
+
 	let roomNameDebounce;
 	let roomExists;
 	const onNameInput = () => {
@@ -96,6 +190,7 @@
 	};
 
 	let contract;
+	let patContract;
 	$: if (chain && $chain) {
 		contract = new $chain.eth.Contract(OPENHOUSE_CONTRACT, OPENHOUSE_ADDRESS);
 		const listRooms = contract.methods.listRooms();
@@ -107,6 +202,7 @@
 		listMyRooms.call({ from: $address }).then((result) => {
 			$myRooms = result;
 		});
+		patContract = new $chain.eth.Contract(PARTICIPANT_ACCESS_TOKEN_CONTRACT);
 	}
 </script>
 
@@ -167,7 +263,12 @@
 							bind:value={roomName}
 						/>
 						<Button attach="left" type="submit" disabled={loading || !formValid}>
-							{#if loading}Loading...{:else}{action} Room{/if}
+							{#if loading}
+								{#if creating}Creating...{/if}
+								{#if joining}Joining...{/if}
+								{#if minting}Minting...{/if}
+								{#if !creating && !joining && !minting}Loading...{/if}
+								{:else}{action} Room{/if}
 						</Button>
 					</div>
 					{#if action === 'Create'}
