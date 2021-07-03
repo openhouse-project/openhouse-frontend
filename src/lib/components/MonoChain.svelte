@@ -58,15 +58,25 @@
 		$accounts = await $web3.eth.getAccounts();
 		if ($accounts[0] !== $address) {
 			console.log('Syncing account', $accounts[0]);
-			$address = $accounts[0];
-			$domain = await ensDomain($address).catch(() => '');
-			$addressName = $domain || $address;
+			// Invalidate the token
+			$token = '';
+			if ($accounts[0] === undefined) {
+				$balance.wei = 0;
+				$balance.eth = 0;
+				$domain = '';
+				$addressName = 'guest';
+				$address = '';
+			} else {
+				$address = $accounts[0];
+				$domain = await ensDomain($address).catch(() => '');
+				$addressName = $domain || $address;
+			}
 		}
 		await getBalance();
 	}
 
 	export async function getBalance(): Promise<number> {
-		if (web3 && $web3 && $address !== ROOT_ADDRESS && !balanceLoading) {
+		if (web3 && $web3 && $address !== undefined && $address !== ROOT_ADDRESS && !balanceLoading) {
 			balanceLoading = true;
 			$balance.wei = await $web3.eth.getBalance($address);
 			$balance.eth = $web3.utils.fromWei($balance.wei, 'ether');

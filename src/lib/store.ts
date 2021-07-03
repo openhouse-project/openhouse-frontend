@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 
 export const accounts = writable([]);
 export const address = writable('');
-export const addressName = writable('Anonymous');
+export const addressName = writable('guest');
 export const balance = writable({
 	eth: 0,
 	wei: 0
