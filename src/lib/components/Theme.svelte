@@ -101,6 +101,13 @@
 		--color-aqua-95: hsl(var(--color-aqua-base), 95%);
 	}
 
+	:global(body.noscroll) {
+		width: 100vw;
+		height: 100vh;
+		position: fixed;
+		overflow: hidden;
+	}
+
 	.theme {
 		font-size: 18px;
 		line-height: 1.125em;
