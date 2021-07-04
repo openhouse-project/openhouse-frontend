@@ -126,8 +126,21 @@
 			let base_image = new Image();
 			base_image.setAttribute('crossOrigin', 'anonymous');
 			base_image.onload = function () {
-				canvas.width = base_image.width;
-				canvas.height = base_image.height;
+				let w, h;
+				if (base_image.width > 800 || base_image.height > 800) {
+					if (base_image.width > base_image.height) {
+						w = 800;
+						h = base_image.height / (base_image.width / 800);
+					} else {
+						h = 800;
+						w = base_image.width / (base_image.height / 800);
+					}
+				} else {
+					w = base_image.width;
+					h = base_image.height;
+				}
+				canvas.width = w;
+				canvas.height = h;
 				ctx.drawImage(base_image, 0, 0);
 				resolve(canvas.toDataURL());
 				canvas.remove();
