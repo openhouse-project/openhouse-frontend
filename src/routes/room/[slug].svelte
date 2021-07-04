@@ -263,7 +263,12 @@
 		if (!connected && $addressName) {
 			connected = true;
 			console.log('Initializing jitsi');
-			await loadNFTBackgrounds();
+			try {
+				await loadNFTBackgrounds();
+			} catch (error) {
+				console.error(error);
+			}
+			
 			await tick();
 			const options = {
 				roomName: $page.params.slug,
