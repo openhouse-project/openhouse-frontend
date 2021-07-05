@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	export const ROOT_ADDRESS = '0x0000000000000000000000000000000000000000';
-	export const TIP_ADDRESS = '0x834356a88C66897FA0A05a61964a91A607956ee3';
+	export const TIP_ADDRESS = '0x4610C7F55EF918b37B47cc0176484b817807f001';
 </script>
 
 <script lang="ts">

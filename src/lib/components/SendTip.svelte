@@ -62,13 +62,7 @@
 	<RingLoader />
 	<p>Sending tip...</p>
 {:else}
-	<Button
-		{size}
-		--bg="linear-gradient(to bottom, var(--color-red), var(--color-red-60))"
-		--hover-bg="linear-gradient(to bottom, var(--color-red-60), var(--color-red))"
-		on:click={onSendTip}
-		disabled={sending}
-	>
+	<Button {size} on:click={onSendTip} disabled={sending}>
 		<slot {success} {error} {sending}>Tip the Openhouse Project</slot>
 	</Button>
 {/if}

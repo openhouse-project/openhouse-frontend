@@ -4,12 +4,14 @@
 	export let type;
 	export let value;
 	export let checked = false;
+	export let placeholder = '';
 </script>
 
 {#if type === 'text'}
 	<input
 		{id}
 		{name}
+		{placeholder}
 		type="text"
 		bind:value
 		on:input
@@ -24,6 +26,7 @@
 	<input
 		{id}
 		{name}
+		{placeholder}
 		type="number"
 		bind:value
 		on:input
@@ -38,6 +41,7 @@
 	<input
 		{id}
 		{name}
+		{placeholder}
 		type="email"
 		bind:value
 		on:input
@@ -52,6 +56,7 @@
 	<input
 		{id}
 		{name}
+		{placeholder}
 		type="checkbox"
 		bind:value
 		on:input
@@ -67,6 +72,7 @@
 	<input
 		{id}
 		{name}
+		{placeholder}
 		type="radio"
 		bind:value
 		on:input
@@ -81,6 +87,7 @@
 	<input
 		{id}
 		{name}
+		{placeholder}
 		type="color"
 		bind:value
 		on:input
@@ -95,6 +102,7 @@
 	<input
 		{id}
 		{name}
+		{placeholder}
 		type="password"
 		bind:value
 		on:input
@@ -109,6 +117,7 @@
 	<select
 		{id}
 		{name}
+		{placeholder}
 		bind:value
 		on:input
 		on:blur
@@ -122,6 +131,7 @@
 	<textarea
 		{id}
 		{name}
+		{placeholder}
 		bind:value
 		on:input
 		on:change
