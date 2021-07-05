@@ -8,7 +8,6 @@
 	const address = getContext('address');
 
 	export let user = '';
-	export let room = '';
 	export let contractAddress = '';
 	export let inviting = false;
 	export let success = false;
