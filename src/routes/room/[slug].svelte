@@ -91,14 +91,18 @@
 								name: item.name,
 								description: item.description
 							};
-							if (!storedImages.find((n) => n.id === nft.id.substr(2))) {
-								imagesChanged = true;
-								console.log('Registering new NFT', nft);
-								const dataUrl = await imageToUri(nft.url);
-								storedImages.push({
-									id: nft.id.substr(2),
-									src: dataUrl
-								});
+							try {
+								if (!storedImages.find((n) => n.id === nft.id.substr(2))) {
+									imagesChanged = true;
+									console.log('Registering new NFT', nft);
+									const dataUrl = await imageToUri(nft.url);
+									storedImages.push({
+										id: nft.id.substr(2),
+										src: dataUrl
+									});
+								}
+							} catch (err) {
+								//ignore cors error when downloading images from 3rd part hosted servers
 							}
 							return nft;
 						})
@@ -129,7 +133,7 @@
 				canvas.width = base_image.width;
 				canvas.height = base_image.height;
 				ctx.drawImage(base_image, 0, 0);
-				resolve(canvas.toDataURL());
+				resolve(canvas.toDataURL('image/jpeg', 0.4));
 				canvas.remove();
 			};
 			base_image.src = url;
