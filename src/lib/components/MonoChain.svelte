@@ -54,9 +54,9 @@
 		};
 	});
 
-	export async function syncAccount(): Promise<void> {
+	export async function syncAccount(force = false): Promise<void> {
 		$accounts = await $web3.eth.getAccounts();
-		if ($accounts[0] !== $address) {
+		if (force || $accounts[0] !== $address) {
 			console.log('Syncing account', $accounts[0]);
 			// Invalidate the token
 			$token = '';
