@@ -6,12 +6,13 @@
 	import Theme from '$lib/components/Theme.svelte';
 	import SendTip from '$lib/components/SendTip.svelte';
 	import '$lib/styles/global.css';
+	import ChainSelect from '$lib/components/ChainSelect.svelte';
 
 	if (browser) window.Buffer = Buffer;
 </script>
 
 <Theme>
-	<MonoChain let:address let:domain let:requestAccounts let:balance>
+	<MonoChain let:address let:domain let:requestAccounts let:syncAccount let:balance let:chain>
 		<header>
 			<section>
 				<a id="brand" href="/">OpenHouse</a>
@@ -20,6 +21,7 @@
 				{#if [ROOT_ADDRESS, undefined, ''].includes(address)}
 					<Button on:click={requestAccounts}>Connect</Button>
 				{:else}
+					<ChainSelect {chain} {syncAccount} />
 					{#if domain !== ''}
 						<span class="domain">{domain}</span>
 					{:else}
